@@ -13,11 +13,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BeanPlaygroundController
 {
-    private $mf;
+//    private $mf;
 
-    public function __construct(MessageFactory $factory)
+    public function __construct()
     {
-        $this->mf = $factory;
+//        $this->mf = $factory;
 
     }
 
