@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-use App\Message\MessageFactory;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,6 +28,6 @@ class BeanPlaygroundController
 //        $content = json_decode($request->getContent(), true);
 //        $m = $this->mf->getMessage('Organisation',1);
 
-        return new JsonResponse(['hello honey ',$m]);
+        return new JsonResponse(['hello honey ', 'ok']);
     }
 }
