@@ -5,13 +5,13 @@ namespace App\Entity\User;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
+use App\Entity\Organisation\IndividualMember;
 use App\Util\AppUtil;
 use App\Util\AwsS3Util;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\OrganisationUser;
-use App\Entity\Organisation;
+use App\Entity\Organisation\Organisation;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -52,7 +52,7 @@ class User implements UserInterface
         $this->organisationUsers = new ArrayCollection();
     }
 
-    public function isGranted($permission = 'ALL', $object = null, $class = null, OrganisationUser $member = null, Organisation $org = null)
+    public function isGranted($permission = 'ALL', $object = null, $class = null, IndividualMember $member = null, Organisation $org = null)
     {
 
     }
@@ -63,7 +63,7 @@ class User implements UserInterface
     public function getAdminOrganisations()
     {
         $orgs = new ArrayCollection();
-        /** @var OrganisationUser $organisationUser */
+        /** @var IndividualMember $organisationUser */
         foreach ($this->organisationUsers as $organisationUser) {
             if (in_array(self::ROLE_ORG_ADMIN, $this->getRoles())) {
                 $orgs->add($organisationUser->getOrganisation());
@@ -79,7 +79,7 @@ class User implements UserInterface
     public function getIndividualMemberData()
     {
         $data = [];
-        /** @var OrganisationUser $im */
+        /** @var IndividualMember $im */
         foreach ($this->organisationUsers as $im) {
             $member['accessToken'] = $im->getAccessToken();
             $member['id'] = $im->getId();
@@ -111,7 +111,7 @@ class User implements UserInterface
         }
     }
 
-    /** @return OrganisationUser */
+    /** @return IndividualMember */
     public function findOrgUserByUuid($uuid)
     {
         $criteria = Criteria::create()
@@ -210,13 +210,13 @@ class User implements UserInterface
         return array_values(array_unique($roles));
     }
 
-    public function addOrganisationUser(OrganisationUser $orgUser)
+    public function addIndividualMember(IndividualMember $orgUser)
     {
         $this->organisationUsers->add($orgUser);
         $orgUser->setUser($this);
     }
 
-    public function removeOrganisationUser(OrganisationUser $orgUser)
+    public function removeIndividualMember(IndividualMember $orgUser)
     {
         $this->organisationUsers->removeElement($orgUser);
         $orgUser->setUser(null);
@@ -432,7 +432,7 @@ class User implements UserInterface
     /**
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getOrganisationUsers(): \Doctrine\Common\Collections\Collection
+    public function getIndividualMembers(): \Doctrine\Common\Collections\Collection
     {
         return $this->organisationUsers;
     }
@@ -440,7 +440,7 @@ class User implements UserInterface
     /**
      * @param \Doctrine\Common\Collections\Collection $organisationUsers
      */
-    public function setOrganisationUsers(\Doctrine\Common\Collections\Collection $organisationUsers): void
+    public function setIndividualMembers(\Doctrine\Common\Collections\Collection $organisationUsers): void
     {
         $this->organisationUsers = $organisationUsers;
     }
