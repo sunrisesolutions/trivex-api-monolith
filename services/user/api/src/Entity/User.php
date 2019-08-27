@@ -425,14 +425,6 @@ class User implements UserInterface
     }
 
     /**
-     * @param \Doctrine\Common\Collections\Collection $individualMembers
-     */
-    public function setIndividualMembers(\Doctrine\Common\Collections\Collection $individualMembers): void
-    {
-        $this->person->getIndividualMembers() = $individualMembers;
-    }
-
-    /**
      * @return string|null
      */
     public function getPlainPassword(): ?string
