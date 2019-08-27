@@ -315,26 +315,31 @@ class Organisation
 
     /**
      * @ORM\Column(type="boolean", options={"default":true})
+     * @Groups({"read","write"})
      */
     private $networkingEnabled = true;
 
     /**
      * @ORM\Column(type="boolean", options={"default":false})
+     * @Groups({"read","write"})
      */
     private $freeonMessagingEnabled = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default": true})
+     * @Groups({"read","write"})
      */
     private $eventEnabled = true;
 
     /**
      * @ORM\Column(type="boolean", options={"default": true})
+     * @Groups({"read","write"})
      */
     private $adminAnnouncementEnabled = true;
 
     /**
      * @ORM\Column(type="boolean", options={"default": true})
+     * @Groups({"read","write"})
      */
     private $memberAnnouncementEnabled = true;
 
