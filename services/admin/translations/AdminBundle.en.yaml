@@ -1,0 +1,251 @@
+optionset: Option Sets
+event: Events
+person: System Users
+organisation: Organisations
+individualgroup: Groups
+individualmember: Members
+pendingapprovalmessage: Pending Approval Messages
+freeonmessage: Free-on Messages
+profile_edit: Profile
+message: Alerts & Notices
+btn_publish: Publish
+btn_deliver: Deliver
+
+btn_draft_update_and_edit_again: Update draft
+btn_draft_create_and_edit_again: Save draft
+btn_draft_create_and_create_a_new_one: Save draft and add another
+btn_draft_create_and_return_to_list: Save draft and close
+btn_draft_update_and_return_to_list: Update draft and close
+delete_or: Or
+link_delete: Delete
+
+breadcrumb:
+    link_groupmember_list: Group Members
+    link_message_list: Messages
+    link_message_create: New Message
+
+    link_person_list: Users
+    link_organisation_create: New Organisation
+    link_individual_group_list: Groups
+    link_org_chapter_list: Sections
+    link_org_chapter_create: New
+    link_subchapter_list: Children
+    link_organisation_list: Organisations
+    link_book_list: Books
+    link_chapter_list: Chapters
+    link_individual_member_list: Members
+    link_category_item_list: Category Items
+    link_book_create: New Book
+group:
+    edit:
+        submit: 'Update group'
+    show:
+        name: 'Group name'
+    new:
+        submit: 'Create group'
+    flash:
+        updated: 'The group has been updated.'
+        created: 'The group has been created.'
+        deleted: 'The group has been deleted.'
+
+security:
+    login:
+        title_user_authentication: 'Authentication'
+        username: Username
+        password: Password
+        remember_me: 'Remember me'
+        submit: 'Log in'
+
+profile:
+    show:
+        username: Username
+        email: Email
+    edit:
+        submit: Update
+    flash:
+        updated: 'The profile has been updated.'
+
+change_password:
+    submit: 'Change password'
+    flash:
+        success: 'The password has been changed.'
+
+registration:
+    check_email: |
+        An email has been sent to %email%. It contains an activation link you must click to activate your account.
+    confirmed: 'Congrats %username%, your account is now activated.'
+    back: 'Back to the originating page.'
+    submit: Register
+    flash:
+        user_created: 'The user has been created successfully.'
+    email:
+        subject: 'Welcome %username%!'
+        message: |
+            Hello %username%!
+
+            To finish activating your account - please visit %confirmationUrl%
+
+            This link can only be used once to validate your account.
+
+            Regards,
+            the Team.
+
+resetting:
+    check_email: |
+        An email has been sent. It contains a link you must click to reset your password.
+        Note: You can only request a new password once within %tokenLifetime% hours.
+
+        If you don't get an email check your spam folder or try again.
+    request:
+        username: 'Username or email address'
+        submit: 'Reset password'
+    reset:
+        submit: 'Change password'
+    flash:
+        success: 'The password has been reset successfully.'
+    email:
+        subject: 'Reset Password'
+        message: |
+            Hello %username%!
+
+            To reset your password - please visit %confirmationUrl%
+
+            Regards,
+            the Team.
+
+# Global strings
+layout:
+    logout: 'Log out'
+    login: 'Log in'
+    register: Register
+    logged_in_as: 'Logged in as %username%'
+    start_editing: Start editing
+    save: Save
+
+filter:
+    label_id: Id
+    label_name: Name
+
+form_group:
+    member_details: Member Details
+    member_groups: Member Groups
+    user_details: User Details
+    grouping: Grouping
+
+form:
+    label_option: Option
+    label_nric_number: NRIC Number
+    label_started_at: Started At
+    label_ended_at: Ended At
+    label_timezone: Timezone
+    label_username: Username
+    label_auth_by_username_password: Authentication by Username/Password
+    label_groups: Groups
+    label_department: Department
+    label_designation: Designation
+    label_personal_info: Personal Info
+    label_title: Title
+    label_body: Body
+    label_updated_at: Updated at
+    group_name: 'Group name'
+    username: Username
+    email: Email
+    current_password: 'Current password'
+    password: Password
+    password_confirmation: 'Repeat password'
+    new_password: 'New password'
+    new_password_confirmation: 'Repeat new password'
+
+    label_linked_to_wellness: Linked To Wellness
+    label_id_number: NRIC/Passport Number
+    label_dob: Birthday
+    label_organisation: Organisation
+    label_edition: Edition
+    label_text: Text
+    label_contactable: Shown in Contact Book
+    label_subscribed: Subscribed
+    label_type: Type
+    label_subject: Subject
+    label_content: Content
+    label_notes: Notes
+    label_number: Number
+    label_purchase_description: Purchase Description
+    label_product_serial_number: Product Serial Number
+    label_description: Description
+    label_visited_at: Visit Time
+
+    label_assign_technician: Assign Technician
+    label_assignee_history: Technician(s)
+    label_service_notes: Service Notes
+    label_service_note: Service Note
+    label_customer: Customer
+    label_status: Status
+    label_reg_no: Reg No.
+    label_code: Code
+    label_admin_users: Admin Users
+    label_app_icon: App Icon (Square Image only)
+    label_slug: Slug
+    label_priority: Priority
+    label_reference_number: Reference Number
+    label_full_text_search: Search
+    label_near_expiry_period: Near-Expiry Period (days)
+    label_field_requirements: Required fields
+    label_tos: TOS
+    label_data_policy: Data Protection Policy
+    label_birth_date: Date of Birth
+    label_name: Name
+    label_gender: Gender
+    label_family_name: Last Name
+    label_middle_name: Middle Name
+    label_given_name: First Name
+    label_telephone: Contact Number
+    label_dialing_code: Country Dialing Code
+    label_created_at: Created At
+    label_opened_on: Opened On
+    label_closed_on: Closed On
+    label_warranty_submission_date: Warranty Submission Date
+    label_product: Product
+    label_product_image: Product Image
+    label_address: Address
+    label_address_unit_number: Unit/Block/House Number
+    label_postal_code: Postal Code
+    label_email: Email
+    label_enabled: Enabled
+    label_action: Action
+    label_logo: Logo
+    label_image: Image
+    label_admin_email: Admin Email
+    label_admin_user: Admin User
+    label_password: Password
+    label_roles: Roles
+    label_model_name: Model Name
+    label_model_number: Model Number
+    label_model_image: Model Image
+    label_purchase_date: Purchased On
+    label_delivery_date: Delivery Date
+    label_submission_date: Registered On
+    label_expiry_date: Expiry Date
+    label_warranty_expiry: Warranty Expiry
+    label_special_remarks: Special Remarks
+    label_receipt_images: Receipt Images
+    label_brand: Brand
+    label_categories: Categories
+    label_sub_categories : Sub-Categories
+    label_suppliers: Suppliers
+    label_category: Category
+    label_subcategory: Sub-Category
+    label_supplier: Supplier
+    label_warranty_period: Warranty Period (months)
+    label_extended_warranty_period: Extended Warranty Period (Online)
+    label_default_warranty_period: Default Warranty Period
+    label_dealer: Dealer
+    label_role: Role
+
+    label_registration_number: Registration Number
+    label_logo_name: Logo Name
+    label_subdomain: Subdomain
+    label_founded_on: Founded On
+    label_uuid: Uuid
+    label_access_token: Access Token
+    label_is_message_deliverable: Is Message Deliverable
+    label_is_admin: Is Admin

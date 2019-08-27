@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use App\Util\AppUtil;
+use App\Util\Messaging\AppUtil;
 
 /**
  * @ApiResource(
@@ -59,7 +59,7 @@ class OptionSet
     private $messageOptions;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\Organisation", inversedBy="optionSets")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\Organisation", inversedBy="optionSets")
      * @ORM\JoinColumn(name="id_organisation", referencedColumnName="id")
      */
     private $organisation;

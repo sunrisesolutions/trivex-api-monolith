@@ -1,0 +1,52 @@
+doctrine:
+    dbal:
+        # configure these for your database server
+        driver: 'pdo_mysql'
+        server_version: '5.7'
+        charset: utf8mb4
+        default_table_options:
+            charset: utf8mb4
+            collate: utf8mb4_unicode_ci
+
+        url: '%env(resolve:DATABASE_URL)%'
+        types:
+            magenta_json: App\Doctrine\Types\JsonType
+
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App
+
+services:
+    magenta_user.user_event_subscriber:
+        class: App\Doctrine\Subscriber\UserEventSubsriber
+        arguments:
+            - '@magenta_user.util.password_updater'
+            - '@magenta_user.util.canonical_fields_updater'
+            - '@service_container'
+        tags: ['doctrine.event_subscriber']
+#
+#    magenta_user.orguser_event_subscriber:
+#        class: App\Doctrine\Subscriber\OrganisationUserEventSubsriber
+#        tags: ['doctrine.event_subscriber']
+
+    magenta_user.util.password_updater:
+        class: App\Util\User\PasswordUpdater
+        public: true # false in FOSUser
+        arguments: ['@security.encoder_factory']
+
+    magenta_user.util.canonical_fields_updater:
+        class: App\Util\User\CanonicalFieldsUpdater
+        public: false
+        arguments: ['@magenta_user.util.canonicalizer','@magenta_user.util.canonicalizer']
+
+    magenta_user.util.canonicalizer:
+        class: App\Util\User\Canonicalizer
+        public: false

@@ -1,0 +1,8 @@
+{# do not extend from base_list_field if you are just an action button #}
+{#{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}#}
+{% block field %}
+  {% if admin.hasAccess('approve', object) %}
+  <a class="btn btn-primary"
+     href="{{ admin.generateObjectUrl('decide',object,{action:'approve'}) }}">Approve </a>
+  {% endif %}
+{% endblock %}

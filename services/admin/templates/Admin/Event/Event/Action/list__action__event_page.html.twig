@@ -1,0 +1,11 @@
+{# do not extend from base_list_field if you are just an action button #}
+{#{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}#}
+{% block field %}
+  <a target="_blank" class="btn btn-primary"
+     href="https://trivesg.com/events/{{ object.id }}"> Go to page </a>
+  <a target="_blank" class="btn btn-primary"
+     href="https://qrcode.magentapulse.com/qr-code/https://trivesg.com/events/{{ object.id }}.png"> Get the QR Code </a>
+  <a target="_blank" class="btn btn-success"
+     href="{{path('admin_app_event_event_event_registration_list',{'id':object.id,'organisation':object.organisation.id})}}"> Checked-in People </a>
+
+{% endblock %}

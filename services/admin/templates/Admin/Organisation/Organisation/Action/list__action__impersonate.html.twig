@@ -1,0 +1,14 @@
+{# do not extend from base_list_field if you are just an action button #}
+{#{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}#}
+{% block field %}
+    {% set adminUser = adminUser(object) %}
+    <a class="btn btn-primary"
+       href="{{ path('admin_app_organisation_organisation_organisation_individualmember_list',{'id': object.id}) }}">Members</a>
+
+    {% if adminUser is not empty %}
+        {#    {{ dump(adminUser(object)) }}#}
+        <a class="btn btn-info"
+           href="{{ path('sonata_admin_dashboard',{'_switch_user': adminUser.username}) }}">Impersonate </a>
+    {% endif %}
+    <br>
+{% endblock %}

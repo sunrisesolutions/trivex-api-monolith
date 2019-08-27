@@ -1,0 +1,110 @@
+{% extends '@SonataAdmin/CRUD/base_show.html.twig' %}
+   {% block tab_menu_navbar_header %}
+       {% if _navbar_title is not empty %}
+           <div class="navbar-header" style="width: 100%; display: flex;">
+               <div style="width:100%; display: flex; ">
+                   {% if object.decisionStatus == 'APPROVED' %}
+                       <span class="decision-status label label-success">APPROVED</span>
+                       <div class="dropdown" style="margin-left: 8px;cursor: pointer;">
+                           <div class="decision-status label label-default dropdown-toggle" data-toggle="dropdown"
+                                id="changedecision" aria-haspopup="true" aria-expanded="false">Change Decision
+                           </div>
+                           <div class="dropdown-menu" aria-labelledby="changedecision">
+                               <form action="" method="post" class="changedecision">
+                                   <button type="submit" class="dropdown-item btn btn-default"
+                                           style="margin: 0px 0px 5px 0px; width: 100%"
+                                           data-action="{{ admin.generateObjectUrl('decide', object,{'action':'reject'}) }}">
+                                       REJECT
+                                   </button>
+                                   <button type="submit" class="dropdown-item btn btn-default" style="width: 100%"
+                                           data-action="{{ admin.generateObjectUrl('decide', object,{'action':'reset'}) }}">
+                                       UNDO APPROVAL
+                                   </button>
+
+                               </form>
+                           </div>
+                       </div>
+
+                   {% elseif  object.decisionStatus == 'REJECTED' %}
+                       <span class="decision-status label label-danger">REJECTED</span>
+                       <div class="dropdown" style="margin-left: 8px;cursor: pointer;">
+                           <div class="decision-status label label-default dropdown-toggle" data-toggle="dropdown"
+                                id="changedecision" aria-haspopup="true" aria-expanded="false">Change Decision
+                           </div>
+                           <div class="dropdown-menu" aria-labelledby="changedecision">
+                               <form action="" method="post" class="changedecision">
+                                   <button type="submit" class="dropdown-item btn btn-default"
+                                           style="margin: 0px 0px 5px 0px; width: 100%"
+                                           data-action="{{ admin.generateObjectUrl('decide', object,{'action':'approve'}) }}">
+                                       APPROVE
+                                   </button>
+                                   <button type="submit" class="dropdown-item btn btn-default" style="width: 100%"
+                                           data-action="{{ admin.generateObjectUrl('decide', object,{'action':'reset'}) }}">
+                                       UNDO REJECTION
+                                   </button>
+                               </form>
+
+                           </div>
+                       </div>
+                   {% endif %}
+
+
+                   {% if admin.hasRoute('decide') %}
+
+                       <form action="" method="post" class="decision-form"
+                             style="width:100%; display: flex; align-items: center;">
+                           {% set isApproveGranted =  admin.hasAccess('approve', object) %}
+                           {% set isRejectGranted =  admin.hasAccess('reject', object) %}
+                           {% if isApproveGranted is not empty and isRejectGranted is not empty %}
+                               <button type="submit" class="decision-button btn btn-success"
+                                       data-action="{{ admin.generateObjectUrl('decide', object,{'action':'approve'}) }}">
+                                   APPROVE
+                               </button>
+                               <button type="submit" class="decision-button btn btn-danger"
+                                       data-action="{{ admin.generateObjectUrl('decide', object,{'action':'reject'}) }}">
+                                   REJECT
+                               </button>
+                           {% endif %}
+
+                           {%- block decision_buttons -%} {% endblock %}
+                           {% if object.status is not empty and object.status == 'NEW' %}
+                               <input id="reviewer-remarks" name="decision-remarks"
+                                      class="decision-remarks form-control"
+                                      placeholder="Reviewer Remarks" value="{{ object.decisionRemarks }}"/>
+                           {% elseif object.status == 'REJECTED' %}
+                               <code>{{ object.decisionRemarks }}</code>
+                           {% endif %}
+                       </form>
+                   {% endif %}
+               </div>
+           </div>
+       {% endif %}
+   {% endblock %}
+
+{%- block javascripts -%}
+    {{ parent() }}
+    <script>
+        (function ($) {
+            $(document).ready(function ($) {
+                $('.decision-form').on('submit', function () {
+
+                });
+
+                $("form button[type=submit]").click(function () {
+                    $(this).parents("form").attr("action", $(this).data('action'));
+                });
+
+            });
+
+        })(jQuery);
+    </script>
+{%- endblock javascripts -%}
+
+{%- block stylesheets -%}
+    {{ parent() }}
+    <style>
+        .navbar-collapse {
+            display: none;
+        }
+    </style>
+{%- endblock stylesheets -%}

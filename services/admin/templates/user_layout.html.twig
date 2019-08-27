@@ -1,0 +1,30 @@
+{# to be used by Security/login.html.twig #}
+{% extends 'standard_layout.html.twig' %}
+
+{% block sonata_nav %}
+{% endblock sonata_nav %}
+
+{% block logo %}
+{% endblock logo %}
+
+{% block sonata_left_side %}
+{% endblock sonata_left_side %}
+
+            {% block body_attributes -%}
+                class="sonata-bc login-page-bk fixed
+                {% if app.request.cookies.get('sonata_sidebar_hide') -%}
+                    sidebar-collapse
+                {%- endif -%}"
+                data-sonata-admin='{{ {
+                config: {
+                    CONFIRM_EXIT: sonata_admin.adminPool.getOption('confirm_exit') ? 'true' : 'false',
+                    USE_SELECT2: sonata_admin.adminPool.getOption('use_select2') ? 'true' : 'false',
+                    USE_ICHECK: sonata_admin.adminPool.getOption('use_icheck') ? 'true' : 'false',
+                    USE_STICKYFORMS: sonata_admin.adminPool.getOption('use_stickyforms') ? 'true' : 'false'
+                },
+                translations: {
+                    CONFIRM_EXIT: 'confirm_exit'|trans({}, 'SonataAdminBundle'),
+                },
+            }|json_encode()|raw }}'
+            {%- endblock -%}
+
