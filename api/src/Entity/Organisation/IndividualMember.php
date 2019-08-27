@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Entity\Person\Person;
+use App\Entity\Event\Registration;
 use App\Filter\Organisation\ConnectedToMemberUuidFilter;
 
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -262,6 +263,11 @@ class IndividualMember
     }
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Event\Registration", mappedBy="individualMember")
+     */
+    private $registrations;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Organisation\Connection", mappedBy="fromMember")
      * @ApiSubresource()
      */
@@ -382,6 +388,38 @@ class IndividualMember
      * @Groups({"read_member"})
      */
     private $enabled = true;
+
+    /**
+     * @return Collection|Registration[]
+     */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
+
+    public function addRegistration(Registration $registration): self
+    {
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations[] = $registration;
+            $registration->setIndividualMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRegistration(Registration $registration): self
+    {
+        if ($this->registrations->contains($registration)) {
+            $this->registrations->removeElement($registration);
+            // set the owning side to null (unless already changed)
+            if ($registration->getIndividualMember() === $this) {
+                $registration->setIndividualMember(null);
+            }
+        }
+
+        return $this;
+    }
+
 
     public function getMembershipNo(): ?string
     {
