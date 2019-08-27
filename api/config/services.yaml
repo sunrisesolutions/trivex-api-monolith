@@ -6,6 +6,7 @@
 parameters:
     env(MERCURE_PUBLISH_URL): ''
     env(MERCURE_JWT_SECRET): ''
+    noreply_email: no-reply-trivex@magentapulse.com
 
 services:
     # default configuration for services in *this* file
