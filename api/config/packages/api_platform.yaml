@@ -8,8 +8,15 @@ parameters:
 api_platform:
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
-    title: Hello API Platform
+    title: Mono API
     version: 1.0.0
+    
+    swagger:
+        api_keys:
+            apiKey:
+                name: Authorization
+                type: header
+    
     # Varnish integration, remove if unwanted
     http_cache:
         invalidation:
