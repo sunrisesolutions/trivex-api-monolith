@@ -262,7 +262,7 @@ class Message
 
     /**
      * @var IndividualMember
-     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\IndividualMember", inversedBy="messages")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\IndividualMember", inversedBy="messages")
      * @ORM\JoinColumn(name="id_sender", referencedColumnName="id")
      */
     protected $sender;
