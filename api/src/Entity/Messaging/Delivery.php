@@ -10,6 +10,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
+use App\Entity\Organisation\IndividualMember;
+
 use App\Filter\NotLikeFilter;
 use App\Filter\GroupByFilter;
 
@@ -159,7 +161,7 @@ class Delivery
 
     /**
      * @var IndividualMember
-     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\IndividualMember", inversedBy="deliveries")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\IndividualMember", inversedBy="deliveries")
      * @ORM\JoinColumn(name="id_recipient", referencedColumnName="id")
      * @Groups("read")
      */
