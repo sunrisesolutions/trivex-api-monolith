@@ -255,7 +255,7 @@ class Message
 
     /**
      * @var Organisation
-     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\Organisation", inversedBy="messages")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\Organisation", inversedBy="messages")
      * @ORM\JoinColumn(name="id_organisation", referencedColumnName="id")
      */
     protected $organisation;
