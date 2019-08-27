@@ -49,7 +49,6 @@ class User implements UserInterface
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->person->getIndividualMembers() = new ArrayCollection();
     }
 
     public function isGranted($permission = 'ALL', $object = null, $class = null, IndividualMember $member = null, Organisation $org = null)
