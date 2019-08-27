@@ -76,7 +76,7 @@ class Person
         return $this->givenName.' '.$this->familyName;
     }
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Organisation\IndividualMember", mappedBy="person")
+     * @ORM\OneToMany(targetEntity="App\Entity\IndividualMember", mappedBy="person")
      */
     private $individualMembers;
 
