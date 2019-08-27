@@ -85,7 +85,7 @@ class Organisation
     private $subdomain;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Organisation\IndividualMember", mappedBy="organisation")
+     * @ORM\OneToMany(targetEntity="App\Entity\IndividualMember", mappedBy="organisation")
      * ApiSubresource()
      */
     private $individualMembers;
