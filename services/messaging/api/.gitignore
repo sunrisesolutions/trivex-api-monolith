@@ -1,6 +1,6 @@
 .idea
-config/services.yaml
-config/packages/aws_sdk.yaml
+#config/services.yaml
+#config/packages/aws_sdk.yaml
 libraries/component/utils/src
 utils
 
