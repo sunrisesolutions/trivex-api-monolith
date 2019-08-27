@@ -261,7 +261,7 @@ class IndividualMember
             'phone' => $person->getPhoneNumber()
         ];
     }
-    
+
     /**
      * @var string
      * @ORM\Column(type="string", length=191)
@@ -278,14 +278,14 @@ class IndividualMember
 
     /**
      * @var Person
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person", inversedBy="individualMembers", cascade={"persist","merge"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person", inversedBy="individualMembers", cascade={"persist","merge"})
      * @ORM\JoinColumn(name="id_person", referencedColumnName="id", onDelete="SET NULL")
      */
     private $person;
 
     /**
      * @var Organisation
-     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\Organisation", inversedBy="individualMembers", cascade={"persist","merge"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation", inversedBy="individualMembers", cascade={"persist","merge"})
      * @ORM\JoinColumn(name="id_organisation", referencedColumnName="id", onDelete="SET NULL")
      */
     private $organisation;
@@ -320,7 +320,7 @@ class IndividualMember
     public $messageAdmin = false;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Organisation\Role", inversedBy="individualMembers")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Role", inversedBy="individualMembers")
      * @ORM\JoinTable(name="organisation__individuals_roles",
      *      joinColumns={@ORM\JoinColumn(name="id_individual", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="id_role", referencedColumnName="id")}
