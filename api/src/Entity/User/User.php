@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 use App\Entity\Organisation\IndividualMember;
+use App\Entity\Person\Person;
 use App\Util\AppUtil;
 use App\Util\AwsS3Util;
 use Doctrine\Common\Collections\ArrayCollection;
