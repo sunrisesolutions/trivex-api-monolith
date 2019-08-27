@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Organisation\IndividualMember;
 use App\Util\AppUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -34,6 +35,7 @@ class Person
     public function __construct()
     {
         $this->nationalities = new ArrayCollection();
+        $this->individualMembers = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
 
@@ -72,6 +74,41 @@ class Person
     public function getName()
     {
         return $this->givenName.' '.$this->familyName;
+    }
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Organisation\IndividualMember", mappedBy="person")
+     */
+    private $individualMembers;
+
+    /**
+     * @return Collection|IndividualMember[]
+     */
+    public function getIndividualMembers(): Collection
+    {
+        return $this->individualMembers;
+    }
+
+    public function addIndividualMember(IndividualMember $individualMember): self
+    {
+        if (!$this->individualMembers->contains($individualMember)) {
+            $this->individualMembers[] = $individualMember;
+            $individualMember->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIndividualMember(IndividualMember $individualMember): self
+    {
+        if ($this->individualMembers->contains($individualMember)) {
+            $this->individualMembers->removeElement($individualMember);
+            // set the owning side to null (unless already changed)
+            if ($individualMember->getPerson() === $this) {
+                $individualMember->setPerson(null);
+            }
+        }
+
+        return $this;
     }
 
     /** @return  Nationality|bool */

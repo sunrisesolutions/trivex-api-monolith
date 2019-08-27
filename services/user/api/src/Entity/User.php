@@ -10,7 +10,7 @@ use App\Util\AwsS3Util;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\OrganisationUser;
+use App\Entity\IndividualMember;
 use App\Entity\Organisation;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -49,10 +49,10 @@ class User implements UserInterface
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->organisationUsers = new ArrayCollection();
+        $this->person->getIndividualMembers() = new ArrayCollection();
     }
 
-    public function isGranted($permission = 'ALL', $object = null, $class = null, OrganisationUser $member = null, Organisation $org = null)
+    public function isGranted($permission = 'ALL', $object = null, $class = null, IndividualMember $member = null, Organisation $org = null)
     {
 
     }
@@ -63,8 +63,8 @@ class User implements UserInterface
     public function getAdminOrganisations()
     {
         $orgs = new ArrayCollection();
-        /** @var OrganisationUser $organisationUser */
-        foreach ($this->organisationUsers as $organisationUser) {
+        /** @var IndividualMember $organisationUser */
+        foreach ($this->person->getIndividualMembers() as $organisationUser) {
             if (in_array(self::ROLE_ORG_ADMIN, $this->getRoles())) {
                 $orgs->add($organisationUser->getOrganisation());
             }
@@ -79,8 +79,8 @@ class User implements UserInterface
     public function getIndividualMemberData()
     {
         $data = [];
-        /** @var OrganisationUser $im */
-        foreach ($this->organisationUsers as $im) {
+        /** @var IndividualMember $im */
+        foreach ($this->person->getIndividualMembers() as $im) {
             $member['accessToken'] = $im->getAccessToken();
             $member['id'] = $im->getId();
             $member['uuid'] = $im->getUuid();
@@ -111,7 +111,7 @@ class User implements UserInterface
         }
     }
 
-    /** @return OrganisationUser */
+    /** @return IndividualMember */
     public function findOrgUserByUuid($uuid)
     {
         $criteria = Criteria::create()
@@ -120,7 +120,7 @@ class User implements UserInterface
             ->setFirstResult(0)
             ->setMaxResults(1);
 
-        return $this->organisationUsers->matching($criteria)->first();
+        return $this->person->getIndividualMembers()->matching($criteria)->first();
     }
 
     /**
@@ -199,7 +199,7 @@ class User implements UserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        foreach ($this->organisationUsers as $im) {
+        foreach ($this->person->getIndividualMembers() as $im) {
             if (!empty($im->getRoles())) {
                 foreach ($im->getRoles() as $r) {
                     if ($r != null && !in_array($r, $roles)) $roles[] = $r;
@@ -208,28 +208,6 @@ class User implements UserInterface
         }
 
         return array_values(array_unique($roles));
-    }
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="OrganisationUser",
-     *     mappedBy="user", cascade={"persist"}, orphanRemoval=true
-     * )
-     *
-     * @var \Doctrine\Common\Collections\Collection ;
-     */
-    private $organisationUsers;
-
-    public function addOrganisationUser(OrganisationUser $orgUser)
-    {
-        $this->organisationUsers->add($orgUser);
-        $orgUser->setUser($this);
-    }
-
-    public function removeOrganisationUser(OrganisationUser $orgUser)
-    {
-        $this->organisationUsers->removeElement($orgUser);
-        $orgUser->setUser(null);
     }
 
     /**
@@ -442,17 +420,17 @@ class User implements UserInterface
     /**
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getOrganisationUsers(): \Doctrine\Common\Collections\Collection
+    public function getIndividualMembers(): \Doctrine\Common\Collections\Collection
     {
-        return $this->organisationUsers;
+        return $this->person->getIndividualMembers();
     }
 
     /**
-     * @param \Doctrine\Common\Collections\Collection $organisationUsers
+     * @param \Doctrine\Common\Collections\Collection $individualMembers
      */
-    public function setOrganisationUsers(\Doctrine\Common\Collections\Collection $organisationUsers): void
+    public function setIndividualMembers(\Doctrine\Common\Collections\Collection $individualMembers): void
     {
-        $this->organisationUsers = $organisationUsers;
+        $this->person->getIndividualMembers() = $individualMembers;
     }
 
     /**
