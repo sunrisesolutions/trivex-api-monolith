@@ -86,10 +86,10 @@ class Organisation
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Organisation\IndividualMember", mappedBy="organisation")
-     * @ApiSubresource()
+     * ApiSubresource()
      */
     private $individualMembers;
-    
+
     /**
      * @return Collection|IndividualMember[]
      */
