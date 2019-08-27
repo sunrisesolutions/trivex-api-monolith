@@ -42,8 +42,8 @@ use App\Controller\SendEmailToIndividualMember;
  *     normalizationContext={"groups"={"read_member"}},
  *     denormalizationContext={"groups"={"write"}}
  * )
- * @ApiFilter(SearchFilter::class, properties={"uuid": "exact", "fulltextString": "partial"})
- * @ApiFilter(ConnectedToMemberUuidFilter::class)
+ * ApiFilter(SearchFilter::class, properties={"uuid": "exact", "fulltextString": "partial"})
+ * ApiFilter(ConnectedToMemberUuidFilter::class)
  *
  * @ORM\Entity()
  * @ORM\Table(name="organisation__individual_member")
