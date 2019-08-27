@@ -4,6 +4,7 @@ namespace App\Entity\Event;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use App\Entity\Organisation\IndividualMember;
 use App\Entity\Person\Person;
 use App\Util\AppUtil;
 use Doctrine\ORM\Mapping as ORM;
