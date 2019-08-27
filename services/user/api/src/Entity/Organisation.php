@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use App\Entity\IndividualMember;
 use App\Util\AppUtil;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -83,25 +85,40 @@ class Organisation
     private $subdomain;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="OrganisationUser",
-     *     mappedBy="organisation", cascade={"persist"}, orphanRemoval=true
-     * )
-     *
-     * @var \Doctrine\Common\Collections\Collection ;
+     * @ORM\OneToMany(targetEntity="App\Entity\Organisation\IndividualMember", mappedBy="organisation")
+     * @ApiSubresource()
      */
-    private $organisationUsers;
-
-    public function addOrganisationUser(OrganisationUser $orgUser)
+    private $individualMembers;
+    
+    /**
+     * @return Collection|IndividualMember[]
+     */
+    public function getIndividualMembers(): Collection
     {
-        $this->organisationUsers->add($orgUser);
-        $orgUser->setOrganisation($this);
+        return $this->individualMembers;
     }
 
-    public function removeOrganisationUser(OrganisationUser $orgUser)
+    public function addIndividualMember(IndividualMember $individualMember): self
     {
-        $this->organisationUsers->removeElement($orgUser);
-        $orgUser->setOrganisation(null);
+        if (!$this->individualMembers->contains($individualMember)) {
+            $this->individualMembers[] = $individualMember;
+            $individualMember->setOrganisation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIndividualMember(IndividualMember $individualMember): self
+    {
+        if ($this->individualMembers->contains($individualMember)) {
+            $this->individualMembers->removeElement($individualMember);
+            // set the owning side to null (unless already changed)
+            if ($individualMember->getOrganisation() === $this) {
+                $individualMember->setOrganisation(null);
+            }
+        }
+
+        return $this;
     }
 
     /**
