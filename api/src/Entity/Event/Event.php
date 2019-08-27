@@ -3,6 +3,7 @@
 namespace App\Entity\Event;
 
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use App\Entity\Organisation\Organisation;
 use App\Util\AppUtil;
 use Aws\Credentials\Credentials;
 use Aws\S3\S3Client;
