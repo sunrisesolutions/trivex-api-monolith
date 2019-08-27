@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Messaging\Messaging;
+namespace App\Entity\Messaging;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -151,7 +151,7 @@ class Delivery
 
     /**
      * @var Message
-     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\Messaging\Message", inversedBy="deliveries")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\Message", inversedBy="deliveries")
      * @ORM\JoinColumn(name="id_message", referencedColumnName="id", onDelete="CASCADE")
      * @Groups("read")
      */
@@ -159,7 +159,7 @@ class Delivery
 
     /**
      * @var IndividualMember
-     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\Messaging\IndividualMember", inversedBy="deliveries")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\IndividualMember", inversedBy="deliveries")
      * @ORM\JoinColumn(name="id_recipient", referencedColumnName="id")
      * @Groups("read")
      */

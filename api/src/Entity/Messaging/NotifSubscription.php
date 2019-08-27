@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Messaging\Messaging;
+namespace App\Entity\Messaging;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -57,7 +57,7 @@ class NotifSubscription
 
     /**
      * @var Collection
-     * @ORM\OneToMany(targetEntity="App\Entity\Messaging\Messaging\Delivery", mappedBy="firstReadFrom")
+     * @ORM\OneToMany(targetEntity="App\Entity\Messaging\Delivery", mappedBy="firstReadFrom")
      */
     protected $deliveries;
 
@@ -98,7 +98,7 @@ class NotifSubscription
 
     /**
      * @var IndividualMember
-     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\Messaging\IndividualMember", inversedBy="notifSubscriptions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\IndividualMember", inversedBy="notifSubscriptions")
      * @ORM\JoinColumn(name="id_individual", referencedColumnName="id", onDelete="CASCADE")
      */
     private $individualMember;
