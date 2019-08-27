@@ -3,6 +3,7 @@
 namespace App\Entity\Messaging;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Organisation\IndividualMember;
 use App\Util\AppUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

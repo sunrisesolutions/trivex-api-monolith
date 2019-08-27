@@ -44,6 +44,48 @@ class Organisation
      */
     private $id;
 
+    public function getIndividualMembersWithMSGAdminRoleGranted()
+    {
+        $c = Criteria::create();
+        $expr = Criteria::expr();
+        $c->andWhere($expr->eq('messageAdminGranted', true));
+        return $this->individualMembers->matching($c);
+    }
+    public function getRole($name)
+    {
+        /** @var \App\Entity\Organisation\Role $role */
+        foreach ($this->roles as $role) {
+            if ($role->getName() === $name) {
+                return $role;
+            }
+        }
+    }
+
+    public function getIndividualMembersByPage($page = null, $limit = AppUtil::BATCH_SIZE)
+    {
+        if (empty($this->memberCount)) {
+            $this->memberCount = $this->individualMembers->count();
+        }
+
+        if (empty($page)) {
+            if ($this->memberPage === null) {
+                $this->memberPage = 1;
+            }
+            $page = $this->memberPage;
+            if ( ($this->memberPage - 1) * $limit > $this->memberCount) {
+                $this->memberPage = $this->memberCount = null;
+
+                return false;
+            }
+            $this->memberPage++;
+        }
+
+        $c = Criteria::create();
+        $c->setFirstResult(($page - 1) * $limit);
+        $c->setMaxResults($limit);
+        return $this->individualMembers->matching($c);
+    }
+
     private function buildLogoPath()
     {
         return 'organisation/logo/'.$this->uuid;
