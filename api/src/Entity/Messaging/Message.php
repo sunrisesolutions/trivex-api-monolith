@@ -9,6 +9,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
+use App\Entity\Organisation\IndividualMember;
+use App\Entity\Organisation\Organisation;
 use App\Filter\NotLikeFilter;
 
 use ApiPlatform\Core\Annotation\ApiResource;
