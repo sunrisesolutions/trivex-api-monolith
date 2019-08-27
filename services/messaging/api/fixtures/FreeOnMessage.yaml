@@ -1,0 +1,20 @@
+App\Entity\FreeOnMessage:
+  free_on_message{6..10}:
+    sender: '@individualmember*'
+    organisation: '@organisation*'
+    fromHour: <numberBetween(1, 12)>
+    toHour: <numberBetween(13, 24)>
+    fromDay: <numberBetween(2, 3)>
+    toDay: <numberBetween(4, 8)>    
+    effectiveFrom: '<dateTimeBetween("now", "+10 day")>'
+    expireOn: '<dateTimeBetween("now", "+6 month")>'    
+
+  free_on_message{1..5}:
+      sender: '@individualmember1'
+      organisation: '@organisation1'
+      fromHour: <numberBetween(1, 12)>
+      toHour: <numberBetween(13, 24)>
+      fromDay: <numberBetween(2, 3)>
+      toDay: <numberBetween(4, 8)>
+      effectiveFrom: '<dateTimeBetween("now", "+10 day")>'
+      expireOn: '<dateTimeBetween("now", "+6 month")>'    

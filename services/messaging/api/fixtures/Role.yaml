@@ -1,0 +1,22 @@
+App\Entity\Role:
+  role1:
+#    name: '<randomElement(["ROLE_ORG_ADMIN", "ROLE_USER"])>'
+    name: 'ROLE_ORG_ADMIN'
+    individualMembers: ['@individualmember1']
+    uuid: 'AUTH_ROLE-1'
+    organisation: '@organisation1'
+  role2:
+    name: 'ROLE_USER'
+    individualMembers: ['@individualmember*']
+    uuid: 'AUTH_ROLE-2'
+    organisation: '@organisation*'    
+  role3:
+    name: 'ROLE_MSG_ADMIN'
+    individualMembers: ['@individualmember*']
+    uuid: 'AUTH_ROLE-3'
+    organisation: '@organisation*'
+  role4:
+      name: 'ROLE_EVENT_ADMIN'
+      individualMembers: ['@individualmember*']
+      uuid: 'AUTH_ROLE-4'
+      organisation: '@organisation*'    

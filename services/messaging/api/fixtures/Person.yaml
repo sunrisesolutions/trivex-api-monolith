@@ -1,0 +1,9 @@
+App\Entity\Person:
+  person{1..5}:
+    birthDate: '<dateTimeBetween("-10 year", "now")>'
+    name: '<name()>'
+    email: '<email()>'
+    phoneNumber: '<numberBetween(1000000000, 9000000000)>'
+    jobTitle: '<jobTitle()>'
+    uuid: 'UID-<numberBetween(100000, 900000)>'
+    employerName: 'magenta'

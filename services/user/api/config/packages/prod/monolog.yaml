@@ -1,0 +1,53 @@
+monolog:
+#    handlers:
+#        main:
+#            type: fingers_crossed
+#            action_level: error
+#            handler: nested
+#            excluded_404s:
+#                # regex: exclude all 404 errors from the logs
+#                - ^/
+#        nested:
+#            type: stream
+#            path: "%kernel.logs_dir%/%kernel.environment%.log"
+#            level: debug
+#        console:
+#            type: console
+#            process_psr_3_messages: false
+#            channels: ["!event", "!doctrine"]
+#        deprecation:
+#            type: stream
+#            path: "%kernel.logs_dir%/%kernel.environment%.deprecations.log"
+#        deprecation_filter:
+#            type: filter
+#            handler: deprecation
+#            max_level: info
+#            channels: ["php"]
+    handlers:
+        critical_error_logging:
+            type:         fingers_crossed
+            action_level: critical
+            handler:      grouped
+        grouped:
+            type:    group
+            members: [streamed, deduplicated]
+        streamed:
+            type:  stream
+            path:  '%kernel.logs_dir%/%kernel.environment%.log'
+            level: debug
+        deduplicated:
+            type: deduplication
+            # the time in seconds during which duplicate entries are discarded (default: 60)
+            time: 60
+            handler: swift
+        swift:
+            type:       swift_mailer
+            from_email: '%noreply_email%'
+            to_email:   'binh@sunrise.vn'
+            subject:    'Trivex User API Error! %%message%%'
+            level:      debug
+            formatter:  monolog.formatter.html
+            content_type: text/html
+
+
+

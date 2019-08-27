@@ -1,0 +1,9 @@
+App\Entity\OrganisationUser:
+  organisationuser{2..5}:
+    user: '@user<current()>'
+    organisation: '@organisation<current()>'
+    uuid (unique): 'ORG-<numberBetween(100000000, 900000000)>'
+  organisationuser1:
+      user: '@user1'
+      organisation: '@organisation1'
+      uuid (unique): 'ORG-350618810'  

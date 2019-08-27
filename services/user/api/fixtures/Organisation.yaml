@@ -1,0 +1,8 @@
+App\Entity\Organisation:
+  organisation{2..5}:
+    code: 'username()'
+    uuid (unique): 'ORG-<numberBetween(100000000, 900000000)>'
+    
+  organisation1:
+      code: 'magenta'
+      uuid (unique): 'ORG-5d4c04e0c51a4-111708082019'    

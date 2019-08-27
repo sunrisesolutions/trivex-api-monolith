@@ -1,0 +1,6 @@
+#App\Entity\Nationality:
+#  nationality{1..5}:
+#    country: '<country()>'
+#    nricNumber: 'NN-<numberBetween(1000, 9000)>'
+#    passportNumber: 'PN-<numberBetween(1000, 9000)>'
+#    person: '@person*'

@@ -1,0 +1,10 @@
+App\Entity\User:
+  user{1..5}:
+    username (unique): 'user<current()>'
+    email (unique): 'user<current()>\@gmail.com'
+    roles: '[ROLE_USER]'
+    plainPassword: '123456'
+    idNumber (unique): '250<numberBetween(100000, 900000)>'
+    uuid (unique): 'USER-<numberBetween()>'
+    phone: '84<numberBetween(10000000, 90000000)>'
+    birthDate: '<dateTimeBetween("-200 days", "now")>'

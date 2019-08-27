@@ -1,0 +1,12 @@
+App\Entity\Organisation:
+  organisation{2..5}:
+    foundedOn: '<dateTimeBetween("-2 days", "now")>'
+    address: '<address()>'
+    name: '<name()>'
+    uuid: 'NN-<numberBetween(1000, 9000)>'
+    
+  organisation1:
+    foundedOn: '<dateTimeBetween("-2 days", "now")>'
+    address: '<address()>'
+    name: 'Magenta Consulting Services'
+    uuid: 'ORG-5d4c04e0c51a4-111708082019'    

@@ -1,0 +1,13 @@
+App\Entity\Message:
+  message{1..5}:
+    sender: '@individualmember*'
+    organisation: '@organisation*'
+    subject: '<name()>'
+    body: '<name()>'
+
+  message{6..10}:
+    sender: '@individualmember*'
+    organisation: '@organisation*'
+    subject: '<name()>'
+    body: '<name()>'
+    status: 'MESSAGE_PENDING_APPROVAL'

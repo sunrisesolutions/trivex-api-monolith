@@ -1,0 +1,10 @@
+App\Entity\IndividualMember:
+  individualmember{2..5}:
+    person: '@person*'
+    organisation: '@organisation*'
+    uuid: 'NN-<numberBetween(1000, 9000)>'
+
+  individualmember1:
+      person: '@person1'
+      organisation: '@organisation1'
+      uuid: 'ORG-350618810'
