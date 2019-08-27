@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Messaging\Messaging\Messaging;
+namespace App\Entity\Messaging;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
