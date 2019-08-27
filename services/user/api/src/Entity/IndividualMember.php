@@ -261,19 +261,7 @@ class IndividualMember
             'phone' => $person->getPhoneNumber()
         ];
     }
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Organisation\Connection", mappedBy="fromMember")
-     * @ApiSubresource()
-     */
-    private $fromConnections;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Organisation\Connection", mappedBy="toMember")
-     * @ApiSubresource()
-     */
-    private $toConnections;
-
+    
     /**
      * @var string
      * @ORM\Column(type="string", length=191)
@@ -342,8 +330,6 @@ class IndividualMember
 
     public function __construct()
     {
-        $this->fromConnections = new ArrayCollection();
-        $this->toConnections = new ArrayCollection();
         $this->createdAt = new \DateTime();
         $this->roles = new ArrayCollection();
     }
