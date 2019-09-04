@@ -5,7 +5,8 @@ namespace App\Entity\Person;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Util\Person\AppUtil;
+use App\Entity\Organisation\IndividualMember;
+use App\Util\AppUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -77,6 +78,43 @@ class Person
         }        $nat->setPassportNumber($passportNumber);
         return $nat;
     }
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Organisation\IndividualMember", mappedBy="person")
+     */
+    private $individualMembers;
+
+    /**
+     * @return Collection|IndividualMember[]
+     */
+    public function getIndividualMembers(): Collection
+    {
+        return $this->individualMembers;
+    }
+
+    public function addIndividualMember(IndividualMember $individualMember): self
+    {
+        if (!$this->individualMembers->contains($individualMember)) {
+            $this->individualMembers[] = $individualMember;
+            $individualMember->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIndividualMember(IndividualMember $individualMember): self
+    {
+        if ($this->individualMembers->contains($individualMember)) {
+            $this->individualMembers->removeElement($individualMember);
+            // set the owning side to null (unless already changed)
+            if ($individualMember->getPerson() === $this) {
+                $individualMember->setPerson(null);
+            }
+        }
+
+        return $this;
+    }
+
     /** @return  Nationality|bool */
     public function getNationality()
     {
@@ -194,7 +232,39 @@ class Person
 
     public function __construct()
     {
+        $this->individualMembers = new ArrayCollection();
         $this->nationalities = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection|Nationality[]
+     */
+    public function getNationalities(): Collection
+    {
+        return $this->nationalities;
+    }
+
+    public function addNationality(Nationality $nationality): self
+    {
+        if (!$this->nationalities->contains($nationality)) {
+            $this->nationalities[] = $nationality;
+            $nationality->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNationality(Nationality $nationality): self
+    {
+        if ($this->nationalities->contains($nationality)) {
+            $this->nationalities->removeElement($nationality);
+            // set the owning side to null (unless already changed)
+            if ($nationality->getPerson() === $this) {
+                $nationality->setPerson(null);
+            }
+        }
+
+        return $this;
     }
 
     public function getId(): ?int
@@ -300,118 +370,104 @@ class Person
     }
 
     /**
-     * @return Collection|Nationality[]
-     */
-    public function getNationalities(): Collection
-    {
-        return $this->nationalities;
-    }
-
-    public function addNationality(Nationality $nationality): self
-    {
-        if (!$this->nationalities->contains($nationality)) {
-            $this->nationalities[] = $nationality;
-            $nationality->setPerson($this);
-        }
-
-        return $this;
-    }
-
-    public function removeNationality(Nationality $nationality): self
-    {
-        if ($this->nationalities->contains($nationality)) {
-            $this->nationalities->removeElement($nationality);
-            // set the owning side to null (unless already changed)
-            if ($nationality->getPerson() === $this) {
-                $nationality->setPerson(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @ORM\Column(type="string", length=128, nullable=true)
+     * @Groups({"read","write"})
      */
     private $salutation;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $homeAddress;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $homePostalCode;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $residentCountry;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $mobileNumber;
 
     /**
      * @ORM\Column(type="string", length=128, nullable=true)
+     * @Groups({"read","write"})
      */
     private $maritalStatus;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $academicInfo;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"read","write"})
      */
     private $yearsInPosition;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $jobFunction;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $alternateEmployerName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $jobIndustry;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $employerAddress;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $employerPostalCode;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $employerCountry;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $employerContact;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $interestGroups;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
      */
     private $lifeStyle;
 

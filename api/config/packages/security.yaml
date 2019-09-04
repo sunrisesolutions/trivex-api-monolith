@@ -6,6 +6,10 @@ security:
         ROLE_ORG_ADMIN:   [ROLE_MSG_ADMIN, ROLE_EVENT_ADMIN]
         ROLE_ADMIN:       ROLE_ORG_ADMIN
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    encoders:
+        App\Entity\User\User:
+            algorithm: argon2i
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         in_memory: { memory: null }

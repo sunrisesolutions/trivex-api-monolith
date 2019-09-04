@@ -7,8 +7,9 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
-use App\Util\Organisation\AppUtil;
-use App\Util\Organisation\AwsS3Util;
+use App\Entity\Event\Event;
+use App\Util\AppUtil;
+use App\Util\AwsS3Util;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -42,6 +43,48 @@ class Organisation
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    public function getIndividualMembersWithMSGAdminRoleGranted()
+    {
+        $c = Criteria::create();
+        $expr = Criteria::expr();
+        $c->andWhere($expr->eq('messageAdminGranted', true));
+        return $this->individualMembers->matching($c);
+    }
+    public function getRole($name)
+    {
+        /** @var \App\Entity\Organisation\Role $role */
+        foreach ($this->roles as $role) {
+            if ($role->getName() === $name) {
+                return $role;
+            }
+        }
+    }
+
+    public function getIndividualMembersByPage($page = null, $limit = AppUtil::BATCH_SIZE)
+    {
+        if (empty($this->memberCount)) {
+            $this->memberCount = $this->individualMembers->count();
+        }
+
+        if (empty($page)) {
+            if ($this->memberPage === null) {
+                $this->memberPage = 1;
+            }
+            $page = $this->memberPage;
+            if ( ($this->memberPage - 1) * $limit > $this->memberCount) {
+                $this->memberPage = $this->memberCount = null;
+
+                return false;
+            }
+            $this->memberPage++;
+        }
+
+        $c = Criteria::create();
+        $c->setFirstResult(($page - 1) * $limit);
+        $c->setMaxResults($limit);
+        return $this->individualMembers->matching($c);
+    }
 
     private function buildLogoPath()
     {
@@ -181,8 +224,45 @@ class Organisation
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\Organisation", inversedBy="children")
+     * @ORM\JoinColumn(name="id_parent", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Event\Event", mappedBy="organisation")
+     */
+    private $events;
+
+    /**
+     * @return Collection|Event[]
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): self
+    {
+        if (!$this->events->contains($event)) {
+            $this->events[] = $event;
+            $event->setOrganisation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): self
+    {
+        if ($this->events->contains($event)) {
+            $this->events->removeElement($event);
+            // set the owning side to null (unless already changed)
+            if ($event->getOrganisation() === $this) {
+                $event->setOrganisation(null);
+            }
+        }
+
+        return $this;
+    }
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Organisation\Organisation", mappedBy="parent")
@@ -235,26 +315,31 @@ class Organisation
 
     /**
      * @ORM\Column(type="boolean", options={"default":true})
+     * @Groups({"read","write"})
      */
     private $networkingEnabled = true;
 
     /**
      * @ORM\Column(type="boolean", options={"default":false})
+     * @Groups({"read","write"})
      */
     private $freeonMessagingEnabled = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default": true})
+     * @Groups({"read","write"})
      */
     private $eventEnabled = true;
 
     /**
      * @ORM\Column(type="boolean", options={"default": true})
+     * @Groups({"read","write"})
      */
     private $adminAnnouncementEnabled = true;
 
     /**
      * @ORM\Column(type="boolean", options={"default": true})
+     * @Groups({"read","write"})
      */
     private $memberAnnouncementEnabled = true;
 

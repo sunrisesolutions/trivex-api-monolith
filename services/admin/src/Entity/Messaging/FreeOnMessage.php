@@ -7,7 +7,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Util\Messaging\AppUtil;
+use App\Util\AppUtil;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Parent_;
 use Symfony\Component\Serializer\Annotation\Groups;

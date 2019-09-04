@@ -20,13 +20,10 @@ use Doctrine\ORM\Events;
 
 class IndividualMemberEventSubscriber implements ORMEventSubscriber
 {
-
-    private $awsSnsUtil;
     private $manager;
 
-    function __construct(AwsSnsUtil $awsSnsUtil, EntityManagerInterface $manager)
+    function __construct(EntityManagerInterface $manager)
     {
-        $this->awsSnsUtil = $awsSnsUtil;
         $this->manager = $manager;
     }
 

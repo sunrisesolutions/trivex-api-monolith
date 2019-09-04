@@ -3,7 +3,7 @@
 namespace App\Entity\Person;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Util\Person\AppUtil;
+use App\Util\AppUtil;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 

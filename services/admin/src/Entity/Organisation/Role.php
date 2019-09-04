@@ -2,7 +2,7 @@
 
 namespace App\Entity\Organisation;
 
-use App\Util\Organisation\AppUtil;
+use App\Util\AppUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

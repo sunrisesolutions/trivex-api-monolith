@@ -5,18 +5,20 @@ namespace App\Entity\Organisation;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Entity\Person\Person;
+use App\Entity\Event\Registration;
 use App\Filter\Organisation\ConnectedToMemberUuidFilter;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Util\Organisation\AppUtil;
-use App\Util\Organisation\AwsS3Util;
+use App\Util\AppUtil;
+use App\Util\AwsS3Util;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Serializer\Annotation\Groups;
-use App\Controller\SendEmailToIndividualMember;
+use App\Controller\Organisation\SendEmailToIndividualMember;
 
 /**
  * @ApiResource(
@@ -261,6 +263,11 @@ class IndividualMember
     }
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Event\Registration", mappedBy="individualMember")
+     */
+    private $registrations;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Organisation\Connection", mappedBy="fromMember")
      * @ApiSubresource()
      */
@@ -288,7 +295,7 @@ class IndividualMember
 
     /**
      * @var Person
-     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\Person", inversedBy="individualMembers", cascade={"persist","merge"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person", inversedBy="individualMembers", cascade={"persist","merge"})
      * @ORM\JoinColumn(name="id_person", referencedColumnName="id", onDelete="SET NULL")
      */
     private $person;
@@ -348,33 +355,71 @@ class IndividualMember
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read_member"})
      */
     private $membershipNo;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read_member"})
      */
     private $membershipType;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read_member"})
      */
     private $membershipClass;
 
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default":false})
+     * @Groups({"read_member"})
      */
     private $messagingExclusion = false;
 
     /**
      * @ORM\Column(type="date", nullable=true)
+     * @Groups({"read_member"})
      */
     private $startedOn;
 
     /**
      * @ORM\Column(type="boolean", options={"default":true})
+     * @Groups({"read_member"})
      */
     private $enabled = true;
+
+    /**
+     * @return Collection|Registration[]
+     */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
+
+    public function addRegistration(Registration $registration): self
+    {
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations[] = $registration;
+            $registration->setIndividualMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRegistration(Registration $registration): self
+    {
+        if ($this->registrations->contains($registration)) {
+            $this->registrations->removeElement($registration);
+            // set the owning side to null (unless already changed)
+            if ($registration->getIndividualMember() === $this) {
+                $registration->setIndividualMember(null);
+            }
+        }
+
+        return $this;
+    }
+
 
     public function getMembershipNo(): ?string
     {

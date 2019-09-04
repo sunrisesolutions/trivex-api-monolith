@@ -3,6 +3,7 @@
 namespace App\Entity\Messaging;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Organisation\IndividualMember;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -98,7 +99,7 @@ class NotifSubscription
 
     /**
      * @var IndividualMember
-     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\IndividualMember", inversedBy="notifSubscriptions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\IndividualMember", inversedBy="notifSubscriptions")
      * @ORM\JoinColumn(name="id_individual", referencedColumnName="id", onDelete="CASCADE")
      */
     private $individualMember;

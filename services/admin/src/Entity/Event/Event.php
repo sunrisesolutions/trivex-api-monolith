@@ -3,7 +3,8 @@
 namespace App\Entity\Event;
 
 use ApiPlatform\Core\Annotation\ApiSubresource;
-use App\Util\Event\AppUtil;
+use App\Entity\Organisation\Organisation;
+use App\Util\AppUtil;
 use Aws\Credentials\Credentials;
 use Aws\S3\S3Client;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -68,7 +69,7 @@ class Event
     }
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Event\Organisation", inversedBy="events")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\Organisation", inversedBy="events")
      * @ORM\JoinColumn(name="id_organisation", referencedColumnName="id")
      */
     private $organisation;

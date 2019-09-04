@@ -3,14 +3,11 @@
 namespace App\Doctrine\Module\Organisation;
 
 use App\Doctrine\Module\ORMEventSubscriber;
-use App\Entity\Organisation\Nationality;
 use App\Entity\Organisation\Organisation;
-use App\Entity\Organisation\Person;
 use App\Entity\Organisation\Role;
+use App\Entity\Person\Nationality;
 use App\Entity\User\User;
 use App\Message\Message;
-use App\Util\Organisation\AppUtil;
-use App\Util\Organisation\AwsSnsUtil;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
@@ -21,12 +18,10 @@ use Doctrine\ORM\Events;
 class NationalityEventSubscriber implements ORMEventSubscriber
 {
 
-    private $awsSnsUtil;
     private $manager;
 
-    function __construct(AwsSnsUtil $awsSnsUtil, EntityManagerInterface $manager)
+    function __construct(EntityManagerInterface $manager)
     {
-        $this->awsSnsUtil = $awsSnsUtil;
         $this->manager = $manager;
     }
 

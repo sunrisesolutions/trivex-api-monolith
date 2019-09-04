@@ -10,6 +10,7 @@
 
 namespace App\Doctrine\Subscriber;
 
+use App\Doctrine\Module\ORMEventSubscriber;
 use App\Entity\User\User;
 use App\Util\User\CanonicalFieldsUpdater;
 use App\Util\User\PasswordUpdaterInterface;
@@ -26,7 +27,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Christophe Coevoet <stof@notk.org>
  * @author David Buchmann <mail@davidbu.ch>
  */
-class UserEventSubsriber implements EventSubscriber
+class UserEventSubsriber implements ORMEventSubscriber
 {
     private $passwordUpdater;
     private $canonicalFieldsUpdater;

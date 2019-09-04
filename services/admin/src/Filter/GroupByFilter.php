@@ -1,16 +1,15 @@
 <?php
 // api/src/Filter/RegexpFilter.php
 
-namespace App\Filter\Organisation;
+namespace App\Filter;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractContextAwareFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\PropertyHelperTrait;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use App\Entity\Organisation\IndividualMember;
-use Doctrine\ORM\Query\Expr\Join;
+use App\Entity\Delivery;
 use Doctrine\ORM\QueryBuilder;
 
-final class ConnectedToMemberUuidFilter extends AbstractContextAwareFilter
+final class GroupByFilter extends AbstractContextAwareFilter
 {
     use PropertyHelperTrait;
 
@@ -18,26 +17,13 @@ final class ConnectedToMemberUuidFilter extends AbstractContextAwareFilter
     {
         $expr = $queryBuilder->expr();
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        if ($resourceClass === IndividualMember::class) {
-            if ($property === 'connectedToMemberUuid' && !empty($value)) {
-                [$fromConnAlias, $fromField, $fromAssociations] = $this->addJoinsForNestedProperty('fromConnections.toMember', $rootAlias, $queryBuilder, $queryNameGenerator, $resourceClass, Join::LEFT_JOIN);
-                [$fromAlias, $fromField, $fromAssociations] = $this->addJoinsForNestedProperty('fromConnections.toMember.uuid', $rootAlias, $queryBuilder, $queryNameGenerator, $resourceClass, Join::LEFT_JOIN);
-                [$toConnAlias, $toField, $toAssociations] = $this->addJoinsForNestedProperty('toConnections.fromMember', $rootAlias, $queryBuilder, $queryNameGenerator, $resourceClass, Join::LEFT_JOIN);
-                [$toAlias, $toField, $toAssociations] = $this->addJoinsForNestedProperty('toConnections.fromMember.uuid', $rootAlias, $queryBuilder, $queryNameGenerator, $resourceClass, Join::LEFT_JOIN);
-//                $queryBuilder->leftJoin($join, $alias)
-                $queryBuilder->andWhere(
-                    $expr->like($rootAlias.'.uuid', $expr->literal($value))
-//                    $expr->orX(
-//                        $expr->like($fromAlias.'.uuid', $expr->literal($value)),
-//                        $expr->like($toAlias.'.uuid', $expr->literal($value))
-//                    )
-                );
-//                $sql = $queryBuilder->getQuery()->getSQL();
-//                echo $sql;
-//                exit();
+        if ($resourceClass === Delivery::class) {
+            if ($property === 'groupByMessage' && !empty($value)) {
+//                $alias = 'messageSender';
+//                $queryBuilder->join('message.sender', 'messageSender');
+                $queryBuilder->groupBy($rootAlias.'.message');;
             }
         }
-
 
         // otherwise filter is applied to order and page as well
         if (
@@ -64,14 +50,14 @@ final class ConnectedToMemberUuidFilter extends AbstractContextAwareFilter
     public function getDescription(string $resourceClass): array
     {
         $description = [];
-        if ($resourceClass === IndividualMember::class) {
-            $description["connected_to_memberUuid"] = [
-                'property' => 'connectedToMemberUuid',
+        if ($resourceClass === Delivery::class) {
+            $description["groupByMessage"] = [
+                'property' => 'groupByMessage',
                 'type' => 'string',
                 'required' => false,
                 'swagger' => [
-                    'description' => 'Filter Members who are connected to the member with the given UUID',
-                    'name' => 'connectedToMemberUuid',
+                    'description' => 'groupByMessage.',
+                    'name' => 'groupByMessage',
                     'type' => 'Will appear below the name in the Swagger documentation',
                 ],
             ];

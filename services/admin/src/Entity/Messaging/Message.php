@@ -9,11 +9,13 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
-use App\Filter\Messaging\NotLikeFilter;
+use App\Entity\Organisation\IndividualMember;
+use App\Entity\Organisation\Organisation;
+use App\Filter\NotLikeFilter;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
-use App\Util\Messaging\AppUtil;
+use App\Util\AppUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -255,14 +257,14 @@ class Message
 
     /**
      * @var Organisation
-     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\Organisation", inversedBy="messages")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\Organisation", inversedBy="messages")
      * @ORM\JoinColumn(name="id_organisation", referencedColumnName="id")
      */
     protected $organisation;
 
     /**
      * @var IndividualMember
-     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\IndividualMember", inversedBy="messages")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\IndividualMember", inversedBy="messages")
      * @ORM\JoinColumn(name="id_sender", referencedColumnName="id")
      */
     protected $sender;

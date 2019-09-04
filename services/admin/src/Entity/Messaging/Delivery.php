@@ -10,10 +10,12 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
-use App\Filter\Messaging\NotLikeFilter;
-use App\Filter\Messaging\GroupByFilter;
+use App\Entity\Organisation\IndividualMember;
 
-use App\Util\Messaging\AppUtil;
+use App\Filter\NotLikeFilter;
+use App\Filter\GroupByFilter;
+
+use App\Util\AppUtil;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -159,7 +161,7 @@ class Delivery
 
     /**
      * @var IndividualMember
-     * @ORM\ManyToOne(targetEntity="App\Entity\Messaging\IndividualMember", inversedBy="deliveries")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\IndividualMember", inversedBy="deliveries")
      * @ORM\JoinColumn(name="id_recipient", referencedColumnName="id")
      * @Groups("read")
      */

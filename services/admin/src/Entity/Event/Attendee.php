@@ -3,7 +3,8 @@
 namespace App\Entity\Event;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Util\Event\AppUtil;
+use App\Entity\Person\Person;
+use App\Util\AppUtil;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Serializer\Annotation\Groups;

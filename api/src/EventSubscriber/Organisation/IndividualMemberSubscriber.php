@@ -222,7 +222,7 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
                         'accessToken' => $member->getAccessToken(),
                         'personUuid' => $member->getPersonUuid(),
                         'organisationUuid' => $member->getOrganisationUuid(),
-                        '_SYSTEM_OPERATION' => Message::OPERATION_PUT,
+//                        '_SYSTEM_OPERATION' => Message::OPERATION_PUT,
                     ]
                 ],
                 'version' => AppUtil::MESSAGE_VERSION,
@@ -231,7 +231,7 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
             $names = [];
             foreach($member->getRoles() as $role) $names[] = $role->getName();
             $ar['data']['individualMember']['roleString'] = json_encode($names);
-            $this->awsSnsUtil->publishMessage(json_encode($ar), $method);
+//            $this->awsSnsUtil->publishMessage(json_encode($ar), $method);
         }
     }
 

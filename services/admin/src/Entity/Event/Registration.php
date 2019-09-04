@@ -4,7 +4,9 @@ namespace App\Entity\Event;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
-use App\Util\Event\AppUtil;
+use App\Entity\Organisation\IndividualMember;
+use App\Entity\Person\Person;
+use App\Util\AppUtil;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -90,7 +92,7 @@ class Registration
     private $event;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Event\Person", inversedBy="registrations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person", inversedBy="registrations")
      * @ORM\JoinColumn(name="id_person", referencedColumnName="id")
      */
     private $person;
@@ -153,7 +155,8 @@ class Registration
     private $accessToken;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Event\IndividualMember", inversedBy="registrations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\IndividualMember", inversedBy="registrations")
+     * @ORM\JoinColumn(name="id_individual_member", referencedColumnName="id", onDelete="CASCADE"),
      */
     private $individualMember;
 

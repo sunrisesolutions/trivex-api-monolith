@@ -7,7 +7,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
-use App\Util\Messaging\AppUtil;
+use App\Util\AppUtil;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 
