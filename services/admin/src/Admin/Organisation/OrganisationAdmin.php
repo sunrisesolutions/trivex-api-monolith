@@ -200,29 +200,7 @@ class OrganisationAdmin extends BaseAdmin
     {
         $manager = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         // update Messaging
-        /** @var \App\Entity\Messaging\Organisation $mOrg */
-        $mOrg = $manager->getRepository(\App\Entity\Messaging\Organisation::class)->findOneBy(['uuid' => $organisation->getUuid()]);
-        if (empty($mOrg)) {
-            $mOrg = new \App\Entity\Messaging\Organisation();
-        }
-        AppUtil::copyObjectScalarProperties($organisation, $mOrg);
-        $manager->persist($mOrg);
-
-        // update Event
-        $eOrg = $manager->getRepository(\App\Entity\Event\Organisation::class)->findOneBy(['uuid' => $organisation->getUuid()]);
-        if (empty($eOrg)) {
-            $eOrg = new \App\Entity\Event\Organisation();
-        }
-        AppUtil::copyObjectScalarProperties($organisation, $eOrg);
-        $manager->persist($eOrg);
-
-        // update User
-        $uOrg = $manager->getRepository(\App\Entity\User\Organisation::class)->findOneBy(['uuid' => $organisation->getUuid()]);
-        if (empty($uOrg)) {
-            $uOrg = new \App\Entity\User\Organisation();
-        }
-        AppUtil::copyObjectScalarProperties($organisation, $uOrg);
-        $manager->persist($uOrg);
+       
 
         $manager->flush();
     }

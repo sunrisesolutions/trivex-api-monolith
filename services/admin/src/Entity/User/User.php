@@ -65,7 +65,7 @@ class User implements UserInterface
     {
         $orgs = new ArrayCollection();
         /** @var IndividualMember $organisationUser */
-        foreach ($this->organisationUsers as $organisationUser) {
+        foreach ($this->getIndividualMembers() as $organisationUser) {
             if (in_array(self::ROLE_ORG_ADMIN, $this->getRoles())) {
                 $orgs->add($organisationUser->getOrganisation());
             }
@@ -436,7 +436,10 @@ class User implements UserInterface
      */
     public function getIndividualMembers(): \Doctrine\Common\Collections\Collection
     {
-        return $this->person->getIndividualMembers();
+        if (empty($this->person) || empty($members = $this->person->getIndividualMembers())) {
+            return new ArrayCollection();
+        }
+        return $members;
     }
 
 

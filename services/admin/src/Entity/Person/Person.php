@@ -86,7 +86,7 @@ class Person
     private $individualMembers;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="person")
+     * @ORM\OneToOne(targetEntity="App\Entity\User\User", inversedBy="person")
      * @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
      * @Groups("read_user")
      */

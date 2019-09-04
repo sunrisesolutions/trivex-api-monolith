@@ -4,7 +4,6 @@ namespace App\Service\Organisation;
 
 use App\Admin\BaseAdmin;
 use App\Admin\Organisation\OrganisationAdmin;
-use App\Entity\User\OrganisationUser;
 use App\Service\ServiceContext;
 use App\Entity\Organisation\IndividualMember;
 use App\Entity\Organisation\Organisation;
@@ -38,8 +37,8 @@ class OrganisationService extends BaseService
             $user = $this->userService->getUser();
 
             if (empty($org = $user->getAdminOrganisations()->first())) {
-                /** @var OrganisationUser $ou */
-                $ou = $user->getOrganisationUsers()->first();
+                /** @var IndividualMember $ou */
+                $ou = $user->getIndividualMembers()->first();
                 if (!empty($ou)) {
                     $org = $ou->getOrganisation();
                 }
