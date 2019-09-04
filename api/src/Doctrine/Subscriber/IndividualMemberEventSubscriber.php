@@ -41,7 +41,7 @@ class IndividualMemberEventSubscriber implements EventSubscriber
                     'accessToken' => $object->getAccessToken(),
                     'personUuid' => $object->getPersonUuid(),
                     'organisationUuid' => $object->getOrganisationUuid(),
-                    '_SYSTEM_OPERATION' => Message::OPERATION_POST,
+//                    '_SYSTEM_OPERATION' => Message::OPERATION_POST,
                 ]
             ],
             'version' => AppUtil::MESSAGE_VERSION,
@@ -60,7 +60,7 @@ class IndividualMemberEventSubscriber implements EventSubscriber
                     'accessToken' => $object->getAccessToken(),
                     'personUuid' => $object->getPersonUuid(),
                     'organisationUuid' => $object->getOrganisationUuid(),
-                    '_SYSTEM_OPERATION' => Message::OPERATION_PUT,
+//                    '_SYSTEM_OPERATION' => Message::OPERATION_PUT,
                 ]
             ],
             'version' => AppUtil::MESSAGE_VERSION,

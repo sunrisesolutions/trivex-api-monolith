@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisation\IndividualMember;
+use App\Entity\User\User;
 use App\Util\AppUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -83,6 +84,26 @@ class Person
      * @ORM\OneToMany(targetEntity="App\Entity\Organisation\IndividualMember", mappedBy="person")
      */
     private $individualMembers;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="person")
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
+     * @Groups("read_user")
+     */
+    private $user;
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
 
     /**
      * @return Collection|IndividualMember[]

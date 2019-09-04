@@ -164,28 +164,19 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
                 $person->setUuid($personUuid);
 
                 $token = $event->getRequest()->headers->get('Authorization');
-                $url = 'https://' . $_ENV['PERSON_SERVICE_HOST'] . '/people?uuid=' . $personUuid;
-                $client = new Client([
-                    'http_errors' => false,
-                    'verify' => false,
-                    'curl' => [
-                        CURLOPT_TIMEOUT => 30,
-                        CURLOPT_SSL_VERIFYPEER => false,
-                        CURLOPT_SSL_VERIFYHOST => false
-                    ]
-                ]);
+
                 try {
-                    $res = $client->request('GET', $url, ['headers' => ['Authorization' => $token]]);
-                    if ($res->getStatusCode() === 200) {
-                        $data = json_decode($res->getBody()->getContents(), true);
-                        if (isset($data['hydra:totalItems']) && $data['hydra:totalItems'] > 0) {
-                            $person->setGivenName($data['hydra:member'][0]['givenName'] ?? null);
-                            $person->setJobTitle($data['hydra:member'][0]['jobTitle'] ?? null);
-                            $person->setBirthDate($data['hydra:member'][0]['birthDate'] ? new \DateTime($data['hydra:member'][0]['birthDate']) : null);
-                            $person->setEmail($data['hydra:member'][0]['email'] ?? null);
-                            $person->setPhoneNumber($data['hydra:member'][0]['phoneNumber'] ?? null);
-                        }
-                    }
+//                    $res = $client->request('GET', $url, ['headers' => ['Authorization' => $token]]);
+//                    if ($res->getStatusCode() === 200) {
+//                        $data = json_decode($res->getBody()->getContents(), true);
+//                        if (isset($data['hydra:totalItems']) && $data['hydra:totalItems'] > 0) {
+//                            $person->setGivenName($data['hydra:member'][0]['givenName'] ?? null);
+//                            $person->setJobTitle($data['hydra:member'][0]['jobTitle'] ?? null);
+//                            $person->setBirthDate($data['hydra:member'][0]['birthDate'] ? new \DateTime($data['hydra:member'][0]['birthDate']) : null);
+//                            $person->setEmail($data['hydra:member'][0]['email'] ?? null);
+//                            $person->setPhoneNumber($data['hydra:member'][0]['phoneNumber'] ?? null);
+//                        }
+//                    }
                 } catch (\Exception $exception) {}
                 $this->manager->persist($person);
             }
@@ -214,25 +205,7 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
 //        if ($member->messageDeliverable != $member->hasRole('ROLE_MSG_USER')) $this->memberRole($member, 'ROLE_MSG_USER');
 
         //publishMessage
-        if ($method === Request::METHOD_PUT) {
-            $ar = [
-                'data' => [
-                    'individualMember' => [
-                        'uuid' => $member->getUuid(),
-                        'accessToken' => $member->getAccessToken(),
-                        'personUuid' => $member->getPersonUuid(),
-                        'organisationUuid' => $member->getOrganisationUuid(),
-//                        '_SYSTEM_OPERATION' => Message::OPERATION_PUT,
-                    ]
-                ],
-                'version' => AppUtil::MESSAGE_VERSION,
-            ];
 
-            $names = [];
-            foreach($member->getRoles() as $role) $names[] = $role->getName();
-            $ar['data']['individualMember']['roleString'] = json_encode($names);
-//            $this->awsSnsUtil->publishMessage(json_encode($ar), $method);
-        }
     }
 
     private function memberRole(IndividualMember $member, string $roleName) {

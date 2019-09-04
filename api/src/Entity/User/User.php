@@ -200,7 +200,7 @@ class User implements UserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        foreach ($this->organisationUsers as $im) {
+        foreach ($this->getIndividualMembers() as $im) {
             if (!empty($im->getRoles())) {
                 foreach ($im->getRoles() as $r) {
                     if ($r != null && !in_array($r, $roles)) $roles[] = $r;
@@ -224,7 +224,8 @@ class User implements UserInterface
     }
 
     /**
-     * ORM\OneToOne(targetEntity="App\Entity\Person", mappedBy="user", cascade={"persist","merge"})
+     * @var Person $person
+     * @ORM\OneToOne(targetEntity="App\Entity\Person\Person", mappedBy="user", cascade={"persist","merge"})
      */
     private $person;
 
@@ -435,16 +436,9 @@ class User implements UserInterface
      */
     public function getIndividualMembers(): \Doctrine\Common\Collections\Collection
     {
-        return $this->organisationUsers;
+        return $this->person->getIndividualMembers();
     }
 
-    /**
-     * @param \Doctrine\Common\Collections\Collection $organisationUsers
-     */
-    public function setIndividualMembers(\Doctrine\Common\Collections\Collection $organisationUsers): void
-    {
-        $this->organisationUsers = $organisationUsers;
-    }
 
     /**
      * @return string|null
