@@ -29,11 +29,22 @@ class Nationality
 
     /**
      * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function preSave()
+    {
+        if (!empty($person = $this->person) && !empty($user = $person->getUser())) {
+            $user->setIdNumber($this->nricNumber);
+        }
+    }
+
+    /**
+     * @ORM\PrePersist
      */
     public function initiateUuid()
     {
         if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid();
+            $this->uuid = AppUtil::generateUuid('NATIONALITY');
         }
     }
 
@@ -56,6 +67,7 @@ class Nationality
     private $passportNumber;
 
     /**
+     * @var Person $person
      * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person", inversedBy="nationalities")
      * @ORM\JoinColumn(name="id_person", referencedColumnName="id", onDelete="CASCADE")
      * @Groups("read_person")
@@ -70,7 +82,7 @@ class Nationality
 
     public function copyScalarProperties($dest)
     {
-        if(!empty($this->uuid)){
+        if (!empty($this->uuid)) {
             $dest->setUuid($this->uuid);
         }
         $dest->setPassportNumber($this->passportNumber);
@@ -82,7 +94,8 @@ class Nationality
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
-    public function updateTs() {
+    public function updateTs()
+    {
         $this->updatedAt = new \DateTime();
     }
 

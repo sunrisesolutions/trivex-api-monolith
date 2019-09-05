@@ -200,7 +200,7 @@ class OrganisationAdmin extends BaseAdmin
     {
         $manager = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         // update Messaging
-       
+
 
         $manager->flush();
     }

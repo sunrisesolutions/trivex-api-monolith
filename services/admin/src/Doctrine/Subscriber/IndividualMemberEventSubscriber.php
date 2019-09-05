@@ -2,6 +2,7 @@
 
 namespace App\Doctrine\Subscriber;
 
+use App\Doctrine\Module\ORMEventSubscriber;
 use App\Entity\Event;
 use App\Entity\Organisation\IndividualMember;
 use App\Entity\Person;
@@ -12,7 +13,7 @@ use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\Events;
 
-class IndividualMemberEventSubscriber implements EventSubscriber
+class IndividualMemberEventSubscriber implements ORMEventSubscriber
 {
 
     function __construct()
@@ -22,11 +23,32 @@ class IndividualMemberEventSubscriber implements EventSubscriber
     public function getSubscribedEvents()
     {
         return [
+            Events::prePersist,
+            Events::preUpdate,
             Events::postPersist,
             Events::postUpdate,
             Events::postRemove,
             Events::postLoad,
         ];
+    }
+
+    private function setPerson(IndividualMember $member){
+
+
+    }
+
+    public function prePersist(LifecycleEventArgs $args)
+    {
+        $object = $args->getObject();
+        if (!$object instanceof IndividualMember) return;
+
+    }
+
+    public function preUpdate(LifecycleEventArgs $args)
+    {
+        $object = $args->getObject();
+        if (!$object instanceof IndividualMember) return;
+
     }
 
     public function postPersist(LifecycleEventArgs $args)

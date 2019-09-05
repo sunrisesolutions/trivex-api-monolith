@@ -50,7 +50,6 @@ class User implements UserInterface
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->organisationUsers = new ArrayCollection();
     }
 
     public function isGranted($permission = 'ALL', $object = null, $class = null, IndividualMember $member = null, Organisation $org = null)
@@ -93,11 +92,26 @@ class User implements UserInterface
 
     /**
      * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function preSave()
+    {
+        if (!empty($this->person)) {
+            $nat = $this->person->getNationality();
+//            $idNumber = $nat->getNricNumber();
+            $this->idNumber = $nat->getNricNumber();
+            $this->birthDate = $this->person->getBirthDate();
+            $this->phone = $this->person->getPhoneNumber();
+        }
+    }
+
+    /**
+     * @ORM\PrePersist
      */
     public function initiateUuid()
     {
         if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid();
+            $this->uuid = AppUtil::generateUuid('USER');
         }
     }
 
@@ -172,6 +186,23 @@ class User implements UserInterface
         }
         $path = $this->buildProfilePicturePath();
         return AwsS3Util::getInstance()->getObjectReadUrl($path);
+    }
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
     /**

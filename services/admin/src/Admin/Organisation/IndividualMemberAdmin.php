@@ -3,11 +3,11 @@
 namespace App\Admin\Organisation;
 
 use App\Entity\Organisation\IndividualMember;
-use App\Entity\Organisation\Person;
+use App\Entity\Person\Person;
 use App\Entity\Organisation\Role;
 use App\Entity\Organisation\Organisation;
-use App\Entity\User\OrganisationUser;
-use App\Util\Organisation\AppUtil;
+use App\Repository\Person\PersonRepository;
+use App\Util\AppUtil;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use App\Admin\BaseAdmin;
@@ -15,8 +15,6 @@ use App\Entity\User\User;
 use App\Service\User\UserService;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
-use App\Service\User\UserManager;
-use App\Service\User\UserManagerInterface;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -34,6 +32,7 @@ use Sonata\Form\Type\DateTimePickerType;
 use Sonata\FormatterBundle\Form\Type\FormatterType;
 use Sonata\FormatterBundle\Form\Type\SimpleFormatterType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -73,6 +72,9 @@ class IndividualMemberAdmin extends BaseAdmin
         $object = parent::getNewInstance();
         if (empty($person = $object->getPerson())) {
             $object->setPerson($person = new Person());
+            if (empty($user = $person->getUser())) {
+                $person->setUser(new User());
+            }
         }
 
         return $object;
@@ -138,8 +140,16 @@ class IndividualMemberAdmin extends BaseAdmin
             ->add('person.givenName', null, ['label' => 'form.label_given_name'])
 //            ->add('person.middleName', null, ['label' => 'form.label_middle_name'])
             ->add('person.familyName', null, ['label' => 'form.label_family_name'])
+            ->add('person.alternateName', null, ['label' => 'form.label_alternate_name'])
             ->add('person.phoneNumber', null, ['label' => 'form.label_telephone'])
-            ->add('person.nationality.nricNumber', TextType::class, ['label' => 'form.label_nric_number'])
+            ->add('person.nationality.nricNumber', TextType::class, [
+                'label' => 'form.label_nric_number'])
+            ->add('person.birthDate', DatePickerType::class, [
+                'label' => 'form.label_birth_date',
+                'format' => 'dd-MM-yyyy',
+                'placeholder' => 'dd-mm-yyyy',
+                'datepicker_use_button' => false,
+            ])
             ->add('person.gender', ChoiceType::class, [
                 'required' => false,
                 'label' => 'form.label_gender',
@@ -151,27 +161,51 @@ class IndividualMemberAdmin extends BaseAdmin
                 ],
                 'translation_domain' => $this->translationDomain,
             ])
-            ->add('person.birthDate', DatePickerType::class, [
-                'label' => 'form.label_birth_date',
-                'format' => 'dd-MM-yyyy',
-                'placeholder' => 'dd-mm-yyyy',
-                'datepicker_use_button' => false,
-            ])
 //            ->add('person')
 //            ->add('createdAt', DateTimePickerType::class, ['label' => 'form.label_created_at'])
 
         ;
         $formMapper->end();
         $formMapper->with('Profession');
-        $formMapper->add('person.interestGroups');
+        $formMapper
+            ->add('groupName', TextType::class,
+                [
+                    'required' => false,
+                    'label' => 'form.label_group_name'
+                ])
+            ->add('person.interestGroups', null,
+                [
+                    'required' => false,
+                    'label' => 'form.label_interest_groups'
+                ]);
+        $formMapper
+            ->add('person.jobTitle', null,
+                [
+                    'required' => false,
+                    'label' => 'form.label_job_title'
+                ]
+            )
+            ->add('person.jobIndustry', null,
+                [
+                    'required' => false,
+                    'label' => 'form.label_job_industry'
+                ]
+            )
+            ->add('person.employerName', null,
+                [
+                    'required' => false,
+                    'label' => 'form.label_employer_name'
+                ]);
 
         $formMapper->end();
         $formMapper
             ->with('Account');
 
         $formMapper
-            ->add('person.email', null, ['label' => 'form.label_email'])
-            ->add('person.password', null, ['label' => 'form.label_password']);
+            ->add('email', null, ['label' => 'form.label_email'])
+            ->add('person.user.plainPassword', PasswordType::class, [
+                'required' => false,
+                'label' => 'form.label_password']);
 
         $formMapper
             ->add('roles', ModelType::class, [
@@ -201,158 +235,14 @@ class IndividualMemberAdmin extends BaseAdmin
     public function preValidate($object)
     {
         parent::preValidate($object);
-        $oPerson = $object->getPerson();
-        $organisation = $object->getOrganisation();
-
-        $container = $this->getContainer();
-        $manager = $container->get('doctrine.orm.default_entity_manager');
-        if (empty($oPerson->getId())) {
-            if (empty($oPerson->getEmail())) {
-                $oPerson->setEmail($oPerson->getPhoneNumber().'@magenta-wellness.com');
-            }
-            $fopRepo = $manager->getRepository(Person::class);
-            /** @var Person $foPerson */
-            $foPerson = $fopRepo->findOneBy(['email' => $oPerson->getEmail(),
-            ]);
-            if (empty($foPerson)) {
-                $foPerson = $fopRepo->findOneBy(['phoneNumber' => $oPerson->getPhoneNumber(),
-                ]);
-            }
-            if (!empty($foPerson)) {
-                $oPerson->removeIndividualMember($object);
-                $foPerson->addIndividualMember($object);
-            }
+        $person = $object->getPerson();
+        if (empty($person->getEmail())) {
+            $person->setEmail($email = $person->getNationality()->getNricNumber().'@magenta-wellness.com');
         }
-
-        // update Person
-        $email = $oPerson->getEmail();
-        $phone = $oPerson->getPhoneNumber();
-        $pRepo = $manager->getRepository(\App\Entity\Person\Person::class);
-        $fPerson = null;
-        if (!empty($nricNumber = $oPerson->getNationality()->getNricNumber())) {
-            $fPersons = $pRepo->findByNricNumber($nricNumber);
-            if (count($fPersons) > 0) {
-                $fPerson = $fPersons[0];
-                /** @var \App\Entity\Person\Person $_fPerson */
-                foreach ($fPersons as $_fPerson) {
-                    if ($_fPerson->getEmail() === $email) {
-                        $fPerson = $_fPerson;
-                    }
-                }
-            }
+        $user = $person->getUser();
+        if (empty($user->getEmail())) {
+            $user->setEmail($email);
         }
-
-        if (empty($fPerson) && !empty($email)) {
-            /** @var \App\Entity\Person\Person $fPerson */
-            $fPerson = $pRepo->findOneBy(['email' => $email,
-            ]);
-        }
-        if (!empty($fPerson)) {
-            AppUtil::copyObjectScalarProperties($fPerson, $oPerson);
-        } else {
-            $fPerson = new \App\Entity\Person\Person();
-            AppUtil::copyObjectScalarProperties($oPerson, $fPerson);
-            $manager->persist($fPerson);
-            $manager->flush($fPerson);
-            AppUtil::copyObjectScalarProperties($fPerson, $oPerson);
-        }
-
-        $oPerson->setUuid($fPerson->getUuid());
-
-        // update User person
-        $upRepo = $manager->getRepository(\App\Entity\User\Person::class);
-        /** @var \App\Entity\User\Person $fuPerson */
-        $fuPerson = $upRepo->findOneBy(['uuid' => $fPerson->getUuid(),
-        ]);
-        if (empty($fuPerson) && !empty($email)) {
-            $fuPerson = $upRepo->findOneBy(['email' => $email,
-            ]);
-        }
-        if (empty($fuPerson)) {
-            $fuPerson = $upRepo->findOneBy(['phoneNumber' => $phone,
-            ]);
-        }
-        if (empty($fuPerson)) {
-            $fuPerson = new \App\Entity\User\Person();
-            AppUtil::copyObjectScalarProperties($oPerson, $fuPerson);
-        }
-        $fuPerson->setUuid($fPerson->getUuid());
-        $manager->persist($fuPerson);
-        $manager->flush($fuPerson);
-
-        // update User user
-//        if (!empty($plainPassword = $oPerson->getPassword()) && !empty($oPerson->getEmail())) {
-        if (empty($plainPassword = $oPerson->getPassword()) && empty($oPerson->getId())) {
-            $plainPassword = 'p@ssword!@#$%^';
-            $oPerson->setPassword($plainPassword);
-        }
-
-        if (empty($user = $fuPerson->getUser())) {
-            if (empty($oPerson->getEmail())) {
-                $oPerson->setEmail($oPerson->getPhoneNumber().'@magenta-wellness.com');
-            }
-            $user = $manager->getRepository(User::class)->findOneBy(['email' => $oPerson->getEmail()]);
-
-//                $user = $fuPerson->getUser();
-            if (empty($user)) {
-                if (empty($oPerson->getEmail())) {
-                    $oPerson->setEmail($oPerson->getPhoneNumber().'@magenta-wellness.com');
-                }
-                $user = $manager->getRepository(User::class)->findOneBy(['username' => $oPerson->getEmail()]);
-            }
-            if (empty($user)) {
-                $user = new  User();
-                $user->setEmail($email);
-                $user->setUsername($email);
-            }
-            $fuPerson->setUser($user);
-
-        }
-        $user->setIdNumber($oPerson->getNationality()->getNricNumber());
-        $user->setBirthDate($oPerson->getBirthDate());
-        $user->setPhone($oPerson->getPhoneNumber());
-
-        $user->setPerson($fuPerson);
-        $user->setPlainPassword($plainPassword);
-        $manager->persist($fuPerson);
-        $manager->persist($user);
-        $manager->flush($fuPerson);
-        $manager->flush($user);
-
-        $fPerson->setUserUuid($user->getUuid());
-        $manager->persist($fPerson);
-        $manager->flush($fPerson);
-//        }
-        $oPerson->setPassword(null);
-
-
-        // update NRIC
-        $oNationality = $oPerson->getNationality();
-        if (!empty($personUuid = $oPerson->getUuid())) {
-//            $fPerson = $manager->getRepository(\App\Entity\Person\Person::class)->findOneBy(['uuid' => $personUuid]);
-            if (empty($fPerson)) {
-                $fPerson = new \App\Entity\Person\Person();
-                AppUtil::copyObjectScalarProperties($oPerson, $fPerson);
-                $fPerson->setUuid('');
-                $manager->persist($fPerson);
-                $manager->flush($fPerson);
-                $oPerson->setUuid($fPerson->getUuid());
-            }
-            $fNationality = $fPerson->getNationality();
-            if (!empty($fNationality)) {
-                AppUtil::copyObjectScalarProperties($oNationality, $fNationality, false);
-                AppUtil::copyObjectScalarProperties($fNationality, $oNationality);
-            } else {
-                $fNationality = $fPerson->createNationality($oNationality->getCountry(), $oNationality->getNricNumber(), $oNationality->getPassportNumber());
-            }
-            $manager->persist($fNationality);
-            $manager->flush($fNationality);
-            $oNationality->setUuid($fNationality->getUuid());
-        }
-
-        // update Message
-
-
     }
 
     /**
@@ -367,11 +257,74 @@ class IndividualMemberAdmin extends BaseAdmin
     }
 
     /**
-     * @param User $object
+     * @param IndividualMember $object
      */
     public function preUpdate($object)
     {
         parent::preUpdate($object);
+
+        $object->setUpdatedAt(new \DateTime());
+        $person = $object->getPerson();
+        $person->setUpdatedAt(new \DateTime());
+        $nationality = $person->getNationality();
+        $nationality->setUpdatedAt(new \DateTime());
+        $user = $person->getUser();
+        $user->setUpdatedAt(new \DateTime());
+
+        $container = $this->getContainer();
+        $manager = $container->get('doctrine.orm.default_entity_manager');
+        /** @var PersonRepository $personRepo */
+        $personRepo = $container->get('doctrine')->getRepository(Person::class);
+
+        $personWithEmailExisting = false;
+        if (!empty($email = $object->getEmail())) {
+            $personWithEmail = $personRepo->findOneBy(['email' => $email,
+            ]);
+            if (!empty($personWithEmail)) {
+                $person->removeIndividualMember($object);
+                $personWithEmail->addIndividualMember($object);
+                $object->setPerson($personWithEmail);
+                $manager->persist($person);
+                $personWithEmail->preSave();
+                $manager->persist($personWithEmail);
+
+                if (!empty($userWithPersonEmail = $personWithEmail->getUser())) {
+                    $userWithPersonEmail->setUpdatedAt(new \DateTime());
+                    $manager->persist($userWithPersonEmail);
+                }
+
+                $personWithEmailExisting = true;
+            }
+        }
+
+        if (!$personWithEmailExisting) {
+            if (!empty($nric = $person->getNationality()->getNricNumber())) {
+                $persons = $personRepo->findByNricNumber($nric);
+                if (count($persons) > 0) {
+                    /** @var Person $personWithNric */
+                    $personWithNric = $persons[0];
+                    $person->removeIndividualMember($object);
+                    $personWithNric->addIndividualMember($object);
+                    $object->setPerson($personWithNric);
+                    $personWithNric->setEmail($email);
+                    $personWithNric->preSave();
+                    $manager->persist($personWithNric);
+                    if (!empty($userWithPersonNric = $personWithNric->getUser())) {
+                        $userWithPersonNric->setUpdatedAt(new \DateTime());
+                        $manager->persist($userWithPersonNric);
+                    }
+                }
+                $person->setEmail($email);
+                $manager->persist($person);
+            }
+        }
+        $manager = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $person->preSave();
+        $manager->persist($person);
+        $manager->persist($user);
+        $manager->persist($nationality);
+
+
 //        if (!$object->isEnabled()) {
 //            $object->setEnabled(true);
 //        }
@@ -391,76 +344,7 @@ class IndividualMemberAdmin extends BaseAdmin
 
     public function postUpdateEntity(IndividualMember $object)
     {
-        $oPerson = $object->getPerson();
-        $manager = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $oRoles = $object->getRoles();
 
-        // update User
-        /** @var \App\Entity\User\Person $uPerson */
-        $uPerson = $manager->getRepository(\App\Entity\User\Person::class)->findOneBy(['uuid' => $oPerson->getUuid()]);
-        $user = $uPerson->getUser();
-        $ous = $user->getOrganisationUsers();
-        $organisation = $object->getOrganisation();
-
-        /** @var OrganisationUser $uMember */
-        $uMember = null;
-        /** @var OrganisationUser $ou */
-        foreach ($ous as $ou) {
-            if ($ou->getOrganisation()->getUuid() === $organisation->getUuid()) {
-                $uMember = $ou;
-                break;
-            }
-        }
-
-        if (empty($uMember)) {
-            /** @var \App\Entity\User\Organisation $uOrganisation */
-            $uOrganisation = $manager->getRepository(\App\Entity\User\Organisation::class)->findOneBy(['uuid' => $organisation->getUuid()]);
-            if (empty($uOrganisation)) {
-                $uOrganisation = new \App\Entity\User\Organisation();
-                AppUtil::copyObjectScalarProperties($organisation, $uOrganisation);
-            }
-            $uMember = new OrganisationUser();
-            $uMember->setOrganisation($uOrganisation);
-            $manager->persist($uOrganisation);
-            $manager->flush($uOrganisation);
-        }
-
-        $uMember->setUser($user);
-        $uMember->setUuid($object->getUuid());
-        $roles = $object->getRoles();
-        $roleArrays = [];
-        /** @var Role $role */
-        foreach ($roles as $role) {
-            $roleArrays[] = $role->getName();
-        }
-        $uMember->setRoles($roleArrays);
-
-        $manager->persist($uMember);
-        $manager->flush($uMember);
-
-
-        // update Message
-
-        // update Event
-        $eMember = $manager->getRepository(\App\Entity\Event\IndividualMember::class)->findOneBy(['uuid' => $object->getUuid()]);
-        $ePerson = $manager->getRepository(\App\Entity\Event\Person::class)->findOneBy(['uuid' => $oPerson->getUuid()]);
-
-        if (empty($ePerson)) {
-            $ePerson = new \App\Entity\Event\Person();
-        }
-
-        AppUtil::copyObjectScalarProperties($oPerson, $ePerson);
-
-        if (empty($eMember)) {
-            $eMember = new \App\Entity\Event\IndividualMember();
-        }
-        $eMember->setUuid($object->getUuid());
-        $eMember->setPerson($ePerson);
-        $ePerson->addIndividualMember($eMember);
-        $manager->persist($ePerson);
-        $manager->persist($eMember);
-
-        $manager->flush();
     }
 
     ///////////////////////////////////

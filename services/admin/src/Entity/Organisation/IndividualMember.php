@@ -84,6 +84,15 @@ class IndividualMember
     private $profilePicture;
 
     /**
+     * Member Email
+     * @var string|null $email
+     * @ORM\Column(type="string", length=128, nullable=true)
+     * @Groups({"read_member", "write"})
+     */
+    private $email;
+
+
+    /**
      * @Groups({"read_member"})
      *
      * @return mixed|string|null
@@ -142,7 +151,7 @@ class IndividualMember
     public function initiateUuid()
     {
         if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid(sprintf(AppUtil::APP_NAME.'_IM'));
+            $this->uuid = AppUtil::generateUuid('MEMBER');
         }
     }
 
@@ -229,6 +238,13 @@ class IndividualMember
     }
 
     /**
+     * @var string|null
+     * @ORM\Column(type="string", length=191, nullable=true)
+     * @Groups({"read_member", "write"})
+     */
+    private $groupName;
+
+    /**
      * @var string
      * @Groups({"read_member", "write"})
      */
@@ -239,6 +255,23 @@ class IndividualMember
      * @Groups("write")
      */
     private $personUuid;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
 
     /**
      * @return array
@@ -738,5 +771,35 @@ class IndividualMember
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string|null $email
+     */
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
+    }
+    /**
+     * @return string|null
+     */
+    public function getGroupName(): ?string
+    {
+        return $this->groupName;
+    }
+
+    /**
+     * @param string|null $groupName
+     */
+    public function setGroupName(?string $groupName): void
+    {
+        $this->groupName = $groupName;
+    }
 
 }

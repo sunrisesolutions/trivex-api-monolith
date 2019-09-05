@@ -133,6 +133,12 @@ form_group:
     grouping: Grouping
 
 form:
+    label_alternate_name: Alternate Name
+    label_group_name: Group Name
+    label_employer_name: Employer Name
+    label_job_title: Job Title
+    label_job_industry: Job Industry
+    label_interest_groups: Interest Groups
     label_option: Option
     label_nric_number: NRIC Number
     label_started_at: Started At

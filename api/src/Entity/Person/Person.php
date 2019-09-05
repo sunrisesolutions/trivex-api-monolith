@@ -43,7 +43,7 @@ class Person
     public function initiateUuid()
     {
         if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid();
+            $this->uuid = AppUtil::generateUuid('PERSON');
         }
     }
 
@@ -55,9 +55,10 @@ class Person
     {
         $this->name = $this->givenName.' '.$this->middleName.' '.$this->familyName;
     }
+
     public function copyScalarProperties($person)
     {
-        $person->setUuid($this->uuid?:'');
+        $person->setUuid($this->uuid ?: '');
         $person->setEmail($this->email);
         $person->setFamilyName($this->familyName);
         $person->setGivenName($this->givenName);
@@ -68,6 +69,7 @@ class Person
         $person->setMiddleName($this->middleName);
         $person->setPhoneNumber($this->phoneNumber);
     }
+
     public function createNationality($country = null, $nricNumber = null, $passportNumber = null, $uuid = null)
     {
         $nat = new Nationality();
@@ -76,7 +78,8 @@ class Person
         $nat->setNricNumber($nricNumber);
         if (!empty($uuid)) {
             $nat->setUuid($uuid);
-        }        $nat->setPassportNumber($passportNumber);
+        }
+        $nat->setPassportNumber($passportNumber);
         return $nat;
     }
 
@@ -86,7 +89,8 @@ class Person
     private $individualMembers;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User\User", inversedBy="person")
+     * @var User
+     * @ORM\OneToOne(targetEntity="App\Entity\User\User", inversedBy="person", cascade={"persist", "merge"})
      * @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
      * @Groups("read_user")
      */
@@ -139,7 +143,11 @@ class Person
     /** @return  Nationality|bool */
     public function getNationality()
     {
-        return $this->nationalities->first();
+        if (empty($nat = $this->nationalities->first())) {
+            $nat = $this->createNationality('Singapore');
+            $this->addNationality($nat);
+        };
+        return $nat;
     }
 
     /**
@@ -230,7 +238,8 @@ class Person
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
-    public function updateTs() {
+    public function updateTs()
+    {
         $this->updatedAt = new \DateTime();
     }
 
@@ -255,6 +264,24 @@ class Person
     {
         $this->individualMembers = new ArrayCollection();
         $this->nationalities = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function preSave()
+    {
+        if (!empty($this->user)) {
+            $nat = $this->getNationality();
+//            $idNumber = $nat->getNricNumber();
+            $this->user->setIdNumber($nat->getNricNumber());
+            $this->user->setBirthDate($this->birthDate);
+            $this->user->setPhone($this->phoneNumber);
+            if (!empty($this->email)) {
+                $this->user->setEmail($this->email);
+            }
+        }
     }
 
     /**
