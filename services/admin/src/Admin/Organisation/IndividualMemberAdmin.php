@@ -276,6 +276,7 @@ class IndividualMemberAdmin extends BaseAdmin
         /** @var PersonRepository $personRepo */
         $personRepo = $container->get('doctrine')->getRepository(Person::class);
 
+        $password = $user->getPlainPassword();
         $personWithEmailExisting = false;
         if (!empty($email = $object->getEmail())) {
             $personWithEmail = $personRepo->findOneBy(['email' => $email,
@@ -290,6 +291,9 @@ class IndividualMemberAdmin extends BaseAdmin
 
                 if (!empty($userWithPersonEmail = $personWithEmail->getUser())) {
                     $userWithPersonEmail->setUpdatedAt(new \DateTime());
+                    if (!empty($password)) {
+                        $userWithPersonEmail->setPlainPassword($password);
+                    }
                     $manager->persist($userWithPersonEmail);
                 }
 
@@ -311,6 +315,9 @@ class IndividualMemberAdmin extends BaseAdmin
                     $manager->persist($personWithNric);
                     if (!empty($userWithPersonNric = $personWithNric->getUser())) {
                         $userWithPersonNric->setUpdatedAt(new \DateTime());
+                        if (!empty($password)) {
+                            $userWithPersonNric->setPlainPassword($password);
+                        }
                         $manager->persist($userWithPersonNric);
                     }
                 }
