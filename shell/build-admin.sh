@@ -29,6 +29,10 @@ echo 'copy Command'
 rm -R -f $ADMIN/src/Command/*
 cp -R -p $ROOT/api/src/Command/* $ADMIN/src/Command/
 
+echo 'copy Service'
+rm -R -f $ADMIN/src/Service/IndividualMemberService.php
+cp -R -p $ROOT/api/src/Service/IndividualMemberService.php $ADMIN/src/Service/
+
 
 #cd ~/workspace/magenta/trivex/api/admin/src/Entity/User
 #sed -i -- 's/App\\Entity/App\\Entity\\User/g' *
