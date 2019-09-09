@@ -203,7 +203,7 @@ class FreeOnMessageAdmin extends BaseAdmin
     {
         $filterMapper
             ->add('sender.person.name')
-            ->add('text')
+//            ->add('text')
         ;
         //			->add('groups')
 //		;
