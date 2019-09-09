@@ -2,7 +2,6 @@
 
 namespace App\Admin;
 
-use App\Entity\User\OrganisationUser;
 use Bean\Component\Organization\IoC\OrganizationAwareInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Expr;
@@ -212,19 +211,18 @@ trait BaseAdminTrait
         if (empty($org = $this->getCurrentOrganisation($required))) {
             return null;
         }
-        $ous = $user->getOrganisationUsers();
+        $ous = $user->getIndividualMembers();
         $imUuid = null;
-        /** @var OrganisationUser $ou */
+        /** @var IndividualMember $ou */
         foreach ($ous as $ou) {
             if ($ou->getOrganisation()->getUuid() === $org->getUuid()) {
-                $imUuid = $ou->getUuid();
+                return $ou;
             }
         }
         if (empty($imUuid)) {
             return null;
         }
-        return $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository(IndividualMember::class)->findOneBy(['uuid' => $imUuid,
-        ]);
+//        return $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository(IndividualMember::class)->findOneBy(['uuid' => $imUuid,        ]);
     }
 
     /**
