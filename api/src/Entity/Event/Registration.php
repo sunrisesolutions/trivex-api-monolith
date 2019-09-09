@@ -53,7 +53,7 @@ class Registration
     public function initiateUuid()
     {
         if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid(AppUtil::APP_NAME.'_REG');
+            $this->uuid = AppUtil::generateUuid('REG');
         }
     }
 

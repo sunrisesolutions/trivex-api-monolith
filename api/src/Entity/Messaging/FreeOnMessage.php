@@ -68,7 +68,7 @@ class FreeOnMessage extends Message
     public function initiateUuid()
     {
         if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid(AppUtil::APP_NAME.'_FREE_ON');
+            $this->uuid = AppUtil::generateUuid('FREE_ON');
         }
     }
 

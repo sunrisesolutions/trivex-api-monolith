@@ -56,7 +56,7 @@ class MessageOption
     public function initiateUuid()
     {
         if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid();
+            $this->uuid = AppUtil::generateUuid('MSG_OPT');
         }
     }
 

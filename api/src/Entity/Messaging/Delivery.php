@@ -94,7 +94,7 @@ class Delivery
     public function initiateUuid()
     {
         if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid(AppUtil::APP_NAME.'_DELIV');
+            $this->uuid = AppUtil::generateUuid('DELIV');
         }
     }
 
