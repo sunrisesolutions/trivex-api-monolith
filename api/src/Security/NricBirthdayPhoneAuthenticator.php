@@ -136,15 +136,15 @@ class NricBirthdayPhoneAuthenticator extends AbstractGuardAuthenticator
         $imUuid = $request->attributes->get('imUuid');
         $imId =  $request->attributes->get('imId');
 
-//        $memberArr = json_decode(file_get_contents('https://org.api.trivesg.com/organisation/member-id-by-uuid/'.$request->attributes->get('imUid')));
+//        $memberArr = json_decode(file_get_contents('https://org.api.trivesg.com/organisation/member-id-by-uuid/'.$request->attributes->get('imUuid')));
 //        $data['im_id'] = -1;
 //        if (!empty($memberArr)) {
 //            $imId = $memberArr->memberId;
-//            $data['im_id'] = $imId;//$user->findIndividualMemberByUuid($request->attributes->get('imUid'))->getId();
+//            $data['im_id'] = $imId;//$user->findIndividualMemberByUuid($request->attributes->get('imUuid'))->getId();
 //        }
         $data['im_id'] = $imId;
 
-        $data['im_access_token'] = $user->findIndividualMemberByUuid($request->attributes->get('imUid'))->getAccessToken();
+        $data['im_access_token'] = $user->findIndividualMemberByUuid($request->attributes->get('imUuid'))->getAccessToken();
         $response->setData($data);
 
         return $response;
