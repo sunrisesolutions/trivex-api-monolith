@@ -34,6 +34,11 @@ rm -R -f $ADMIN/src/Service/IndividualMemberService.php
 cp -R -p $ROOT/api/src/Service/IndividualMemberService.php $ADMIN/src/Service/
 
 
+echo 'copy security'
+rm -R -f $ADMIN/src/Security/*
+cp -R -p $ROOT/api/src/Security/* $ADMIN/src/Security/
+
+
 #cd ~/workspace/magenta/trivex/api/admin/src/Entity/User
 #sed -i -- 's/App\\Entity/App\\Entity\\User/g' *
 #sed -i -- 's/App\\Util/App\\Util\\User/g' *

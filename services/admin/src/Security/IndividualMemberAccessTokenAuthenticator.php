@@ -117,8 +117,8 @@ class IndividualMemberAccessTokenAuthenticator extends AbstractGuardAuthenticato
         }
 
         $data = $event->getData();
-        $data['im_id'] = $user->findOrgUserByUuid($request->attributes->get('imUid'))->getId();
-        $data['im_access_token'] = $user->findOrgUserByUuid($request->attributes->get('imUid'))->getAccessToken();
+        $data['im_id'] = $user->findIndividualMemberByUuid($request->attributes->get('imUid'))->getId();
+        $data['im_access_token'] = $user->findIndividualMemberByUuid($request->attributes->get('imUid'))->getAccessToken();
         $response->setData($data);
 
         return $response;

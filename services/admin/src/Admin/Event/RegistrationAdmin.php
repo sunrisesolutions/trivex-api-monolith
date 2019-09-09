@@ -3,8 +3,8 @@
 namespace App\Admin\Event;
 
 use App\Entity\Event\Event;
-use App\Entity\Event\Organisation;
 use App\Entity\Event\Registration;
+use App\Entity\Organisation\Organisation;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use App\Admin\BaseAdmin;

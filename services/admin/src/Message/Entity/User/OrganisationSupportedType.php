@@ -2,11 +2,11 @@
 
 namespace App\Message\Entity\User;
 
-use App\Entity\User\Organisation;
-use App\Entity\User\OrganisationUser;
+use App\Entity\Organisation\IndividualMember;
+use App\Entity\Organisation\Organisation;
 
 class OrganisationSupportedType
 {
-    const individualMember = OrganisationUser::class;
+    const individualMember = IndividualMember::class;
     const organisation = Organisation::class;
 }

@@ -4,7 +4,7 @@ namespace App\Admin\Messaging;
 
 use App\Entity\Messaging\FreeOnMessage;
 use App\Entity\Messaging\Message;
-use App\Entity\Messaging\Organisation;
+use App\Entity\Organisation\Organisation;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use App\Admin\BaseAdmin;

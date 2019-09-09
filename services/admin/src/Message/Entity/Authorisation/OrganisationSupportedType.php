@@ -2,9 +2,7 @@
 
 namespace App\Message\Entity\Authorisation;
 
-use App\Entity\Authorisation\Organisation;
-use App\Entity\Authorisation\OrganisationUser;
-use App\Entity\Authorisation\Person;
+use App\Entity\Organisation\Organisation;
 
 class OrganisationSupportedType
 {
