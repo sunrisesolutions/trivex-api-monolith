@@ -108,7 +108,7 @@ class Organisation
     public function initiateUuid()
     {
         if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid();
+            $this->uuid = AppUtil::generateUuid('ORG');
             if (empty($this->code)) {
                 $this->code = $this->uuid;
             }
