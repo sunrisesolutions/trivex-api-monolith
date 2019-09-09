@@ -127,7 +127,7 @@ class User implements UserInterface
     }
 
     /** @return IndividualMember */
-    public function findOrgUserByUuid($uuid)
+    public function findIndividualMemberByUuid($uuid)
     {
         $criteria = Criteria::create()
             ->where(Criteria::expr()->eq('uuid', $uuid))
@@ -135,7 +135,7 @@ class User implements UserInterface
             ->setFirstResult(0)
             ->setMaxResults(1);
 
-        return $this->organisationUsers->matching($criteria)->first();
+        return $this->getIndividualMembers()->matching($criteria)->first();
     }
 
     /**

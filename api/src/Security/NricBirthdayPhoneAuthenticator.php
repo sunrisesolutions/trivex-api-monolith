@@ -2,8 +2,9 @@
 
 namespace App\Security;
 
-use App\Entity\Organisation;
-use App\Entity\OrganisationUser;
+use App\Entity\Organisation\IndividualMember;
+use App\Entity\Organisation\Organisation;
+use App\Entity\User\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationSuccessResponse;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -11,7 +12,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -81,12 +81,13 @@ class NricBirthdayPhoneAuthenticator extends AbstractGuardAuthenticator
             $user = null;
             /** @var User $u */
             foreach ($users as $u) {
-                $ous = $u->getOrganisationUsers();
-                /** @var OrganisationUser $ou */
+                $ous = $u->getIndividualMembers();
+                /** @var IndividualMember $ou */
                 foreach ($ous as $ou) {
                     if ($ou->getOrganisation()->getCode() === $credentials['org-code']) {
                         $uid = $u->getId();
-                        $request->attributes->set('imUid', $ou->getUuid());
+                        $request->attributes->set('imUuid', $ou->getUuid());
+                        $request->attributes->set('imId', $ou->getId());
                     }
                 }
             }
@@ -118,6 +119,7 @@ class NricBirthdayPhoneAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        /** @var User $user */
         $user = $token->getUser();
         $jwt = $this->jwtManager->create($user);
 
@@ -131,14 +133,18 @@ class NricBirthdayPhoneAuthenticator extends AbstractGuardAuthenticator
         }
 
         $data = $event->getData();
-        $memberArr = json_decode(file_get_contents('https://org.api.trivesg.com/organisation/member-id-by-uuid/'.$request->attributes->get('imUid')));
-        $data['im_id'] = -1;
-        if (!empty($memberArr)) {
-            $imId = $memberArr->memberId;
-            $data['im_id'] = $imId;//$user->findOrgUserByUuid($request->attributes->get('imUid'))->getId();
-        }
+        $imUuid = $request->attributes->get('imUuid');
+        $imId =  $request->attributes->get('imId');
 
-        $data['im_access_token'] = $user->findOrgUserByUuid($request->attributes->get('imUid'))->getAccessToken();
+//        $memberArr = json_decode(file_get_contents('https://org.api.trivesg.com/organisation/member-id-by-uuid/'.$request->attributes->get('imUid')));
+//        $data['im_id'] = -1;
+//        if (!empty($memberArr)) {
+//            $imId = $memberArr->memberId;
+//            $data['im_id'] = $imId;//$user->findIndividualMemberByUuid($request->attributes->get('imUid'))->getId();
+//        }
+        $data['im_id'] = $imId;
+
+        $data['im_access_token'] = $user->findIndividualMemberByUuid($request->attributes->get('imUid'))->getAccessToken();
         $response->setData($data);
 
         return $response;
