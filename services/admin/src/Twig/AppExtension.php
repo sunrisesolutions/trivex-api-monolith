@@ -56,13 +56,8 @@ class AppExtension extends AbstractExtension
         if (count($admins) > 0) {
             /** @var IndividualMember $admin */
             $admin = $admins[0];
-            $oPerson = $admin->getPerson();
-            $oPersonUuid = $oPerson->getUuid();
-            /** @var \App\Entity\User\Person $person */
-            $person = $manager->getRepository(\App\Entity\User\Person::class)->findOneBy(['uuid' => $oPersonUuid]);
-            if (!empty($person)) {
-                $adminUser = $person->getUser();
-            }
+            $person = $admin->getPerson();
+            $adminUser = $person->getUser();
         }
         return $adminUser;
     }
