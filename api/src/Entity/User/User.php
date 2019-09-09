@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 use App\Entity\Organisation\IndividualMember;
+use App\Entity\Organisation\Role;
 use App\Entity\Person\Person;
 use App\Util\AppUtil;
 use App\Util\AwsS3Util;
@@ -233,25 +234,14 @@ class User implements UserInterface
 
         foreach ($this->getIndividualMembers() as $im) {
             if (!empty($im->getRoles())) {
+                /** @var Role $r */
                 foreach ($im->getRoles() as $r) {
-                    if ($r != null && !in_array($r, $roles)) $roles[] = $r;
+                    if ($r != null && !in_array($r, $roles)) $roles[] = $r->getName();
                 }
             }
         }
 
         return array_values(array_unique($roles));
-    }
-
-    public function addIndividualMember(IndividualMember $orgUser)
-    {
-        $this->organisationUsers->add($orgUser);
-        $orgUser->setUser($this);
-    }
-
-    public function removeIndividualMember(IndividualMember $orgUser)
-    {
-        $this->organisationUsers->removeElement($orgUser);
-        $orgUser->setUser(null);
     }
 
     /**
