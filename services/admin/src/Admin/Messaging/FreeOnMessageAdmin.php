@@ -116,7 +116,7 @@ class FreeOnMessageAdmin extends BaseAdmin
     {
         $listMapper
             ->add('subject', null, ['label' => 'form.label_subject'])
-            ->add('text', null, ['label' => 'form.label_text'])
+//            ->add('text', null, ['label' => 'form.label_text'])
             ->add('timezone', null, ['label' => 'form.label_timezone'])
         ;
 
@@ -136,7 +136,7 @@ class FreeOnMessageAdmin extends BaseAdmin
             ->with('General')
 //                ->add('username')
             ->add('subject', null, ['label' => 'form.label_subject'])
-            ->add('text', CKEditorType::class, ['label' => 'form.label_text'])
+//            ->add('text', CKEditorType::class, ['label' => 'form.label_text'])
 //                ->add('admin')
         ;
         $formMapper->end();
