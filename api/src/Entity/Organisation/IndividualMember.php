@@ -54,7 +54,7 @@ use App\Controller\Organisation\SendEmailToIndividualMember;
 class IndividualMember
 {
     const TYPE_SUBSCRIPTION = 'SUBSCRIPTION';
-    
+
     private $messageDeliveryCache = [];
 
     /**
@@ -300,6 +300,11 @@ class IndividualMember
     }
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Messaging\Delivery", mappedBy="recipient")
+     */
+    private $deliveries;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Event\Registration", mappedBy="individualMember")
      */
     private $registrations;
@@ -388,6 +393,7 @@ class IndividualMember
         $this->toConnections = new ArrayCollection();
         $this->createdAt = new \DateTime();
         $this->roles = new ArrayCollection();
+        $this->deliveries = new ArrayCollection();
     }
 
     public function isMessageDelivered(Message $message)
@@ -457,6 +463,38 @@ class IndividualMember
      * @Groups({"read_member"})
      */
     private $enabled = true;
+
+
+    /**
+     * @return Collection|Delivery[]
+     */
+    public function getDeliveries(): Collection
+    {
+        return $this->deliveries;
+    }
+
+    public function addDelivery(Delivery $delivery): self
+    {
+        if (!$this->deliveries->contains($delivery)) {
+            $this->deliveries[] = $delivery;
+            $delivery->setRecipient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDelivery(Delivery $delivery): self
+    {
+        if ($this->deliveries->contains($delivery)) {
+            $this->deliveries->removeElement($delivery);
+            // set the owning side to null (unless already changed)
+            if ($delivery->getRecipient() === $this) {
+                $delivery->setRecipient(null);
+            }
+        }
+
+        return $this;
+    }
 
     /**
      * @return Collection|Registration[]
@@ -822,6 +860,7 @@ class IndividualMember
     {
         $this->email = $email;
     }
+
     /**
      * @return string|null
      */
