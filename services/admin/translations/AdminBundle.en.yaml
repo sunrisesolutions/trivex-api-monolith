@@ -133,6 +133,7 @@ form_group:
     grouping: Grouping
 
 form:
+    label_freeon_messaging_enabled: Enable Free-On Messaging
     label_alternate_name: Alternate Name
     label_group_name: Group Name
     label_employer_name: Employer Name
