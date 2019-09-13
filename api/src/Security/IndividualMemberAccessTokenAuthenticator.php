@@ -2,8 +2,8 @@
 
 namespace App\Security;
 
-use App\Entity\Organisation;
-use App\Entity\OrganisationUser;
+use App\Entity\Organisation\IndividualMember;
+use App\Entity\Organisation\Organisation;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationSuccessResponse;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
-use App\Entity\User;
+use App\Entity\User\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -61,13 +61,13 @@ class IndividualMemberAccessTokenAuthenticator extends AbstractGuardAuthenticato
             'access-token' => $request->request->get('access-token'),
         ];
 
-        $im = $this->entityManager->getRepository(OrganisationUser::class)->findOneBy(['accessToken' => $credentials['access-token']]);
+        $im = $this->entityManager->getRepository(IndividualMember::class)->findOneBy(['accessToken' => $credentials['access-token']]);
         if (!empty($im)) {
             $user = $im->getUser();
             $org = $im->getOrganisation();
 
             $request->attributes->set('orgUid', $org->getUuid());
-            $request->attributes->set('imUid', $im->getUuid());
+            $request->attributes->set('imUuid', $im->getUuid());
 
             $uid = $user->getId();
         }
@@ -117,8 +117,8 @@ class IndividualMemberAccessTokenAuthenticator extends AbstractGuardAuthenticato
         }
 
         $data = $event->getData();
-        $data['im_id'] = $user->findIndividualMemberByUuid($request->attributes->get('imUid'))->getId();
-        $data['im_access_token'] = $user->findIndividualMemberByUuid($request->attributes->get('imUid'))->getAccessToken();
+        $data['im_id'] = $user->findIndividualMemberByUuid($request->attributes->get('imUuid'))->getId();
+        $data['im_access_token'] = $user->findIndividualMemberByUuid($request->attributes->get('imUuid'))->getAccessToken();
         $response->setData($data);
 
         return $response;
