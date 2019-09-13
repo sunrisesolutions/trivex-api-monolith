@@ -160,7 +160,9 @@ class OrganisationAdmin extends BaseAdmin
             ->add('registrationNumber')
 //            ->add('logoName')
             ->add('code')
-            ->add('subdomain');
+            ->add('subdomain')
+            ->add('freeonMessagingEnabled')
+        ;
         $formMapper->end();
     }
 
