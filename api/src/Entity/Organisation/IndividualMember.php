@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Entity\Messaging\Delivery;
 use App\Entity\Messaging\Message;
+use App\Entity\Messaging\NotifSubscription;
 use App\Entity\Person\Person;
 use App\Entity\Event\Registration;
 use App\Filter\Organisation\ConnectedToMemberUuidFilter;
@@ -300,6 +301,11 @@ class IndividualMember
     }
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Messaging\NotifSubscription", mappedBy="individualMember")
+     */
+    private $notifSubscriptions;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Messaging\Delivery", mappedBy="recipient")
      */
     private $deliveries;
@@ -394,6 +400,38 @@ class IndividualMember
         $this->createdAt = new \DateTime();
         $this->roles = new ArrayCollection();
         $this->deliveries = new ArrayCollection();
+        $this->notifSubscriptions = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection|NotifSubscription[]
+     */
+    public function getNotifSubscriptions(): Collection
+    {
+        return $this->notifSubscriptions;
+    }
+
+    public function addNotifSubscription(NotifSubscription $notifSubscription): self
+    {
+        if (!$this->notifSubscriptions->contains($notifSubscription)) {
+            $this->notifSubscriptions[] = $notifSubscription;
+            $notifSubscription->setIndividualMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotifSubscription(NotifSubscription $notifSubscription): self
+    {
+        if ($this->notifSubscriptions->contains($notifSubscription)) {
+            $this->notifSubscriptions->removeElement($notifSubscription);
+            // set the owning side to null (unless already changed)
+            if ($notifSubscription->getIndividualMember() === $this) {
+                $notifSubscription->setIndividualMember(null);
+            }
+        }
+
+        return $this;
     }
 
     public function isMessageDelivered(Message $message)
