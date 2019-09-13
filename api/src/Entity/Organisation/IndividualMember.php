@@ -5,6 +5,8 @@ namespace App\Entity\Organisation;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Entity\Messaging\Delivery;
+use App\Entity\Messaging\Message;
 use App\Entity\Person\Person;
 use App\Entity\Event\Registration;
 use App\Filter\Organisation\ConnectedToMemberUuidFilter;
@@ -52,6 +54,8 @@ use App\Controller\Organisation\SendEmailToIndividualMember;
 class IndividualMember
 {
     const TYPE_SUBSCRIPTION = 'SUBSCRIPTION';
+    
+    private $messageDeliveryCache = [];
 
     /**
      * @var int|null The Event Id
@@ -384,6 +388,38 @@ class IndividualMember
         $this->toConnections = new ArrayCollection();
         $this->createdAt = new \DateTime();
         $this->roles = new ArrayCollection();
+    }
+
+    public function isMessageDelivered(Message $message)
+    {
+        if (empty($this->getMessageDelivery($message))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Message $message
+     * @return Delivery|mixed|null
+     */
+    public function getMessageDelivery(Message $message)
+    {
+        if (array_key_exists($message->getId(), $this->messageDeliveryCache)) {
+            if ($this->messageDeliveryCache[$message->getId()]) {
+                return $this->messageDeliveryCache[$message->getId()];
+            }
+        }
+        $c = Criteria::create();
+        $expr = Criteria::expr();
+
+        $c->where($expr->eq('message', $message));
+        $deliveries = $this->deliveries->matching($c);
+        if ($deliveries->count() > 0) {
+            return $this->messageDeliveryCache[$message->getId()] = $deliveries->first();
+        }
+
+        return null;
     }
 
     /**
