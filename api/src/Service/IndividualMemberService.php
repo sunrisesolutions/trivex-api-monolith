@@ -2,10 +2,10 @@
 
 namespace App\Service;
 
-use App\Entity\Delivery;
-use App\Entity\IndividualMember;
-use App\Entity\Message;
-use App\Entity\NotifSubscription;
+use App\Entity\Messaging\Delivery;
+use App\Entity\Organisation\IndividualMember;
+use App\Entity\Messaging\Message;
+use App\Entity\Messaging\NotifSubscription;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
