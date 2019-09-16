@@ -35,13 +35,15 @@ final class CurrentOrganisationExtension implements QueryCollectionExtensionInte
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
-        /** @var JWTUser $user */
-        $user = $this->security->getUser();
+
         $supported = $this->supportClass($resourceClass);
 
         if (!$supported || $this->security->isGranted('ROLE_ADMIN')) {
             return;
         }
+
+        /** @var JWTUser $user */
+        $user = $this->security->getUser();
 
         if ($supported && empty($user) || null === $objectUuid = $user->getOrgUuid()) {
             throw new UnauthorizedHttpException('Please login');

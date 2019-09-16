@@ -33,13 +33,19 @@ final class CurrentIndividualMemberExtension implements QueryCollectionExtension
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
+        $supported = $this->supportClass($resourceClass);
+
+        if (!$supported || $this->security->isGranted('ROLE_ADMIN')) {
+            return;
+        }
+
         /** @var JWTUser $user */
         $user = $this->security->getUser();
         if (empty($user)) {
             throw new UnauthorizedHttpException('Empty JWTUser');
         }
 
-        if (!$this->supportClass($resourceClass) || null === $objectUuid = $user->getImUuid()) {
+        if (null === $objectUuid = $user->getImUuid()) {
             return;
         }
 
