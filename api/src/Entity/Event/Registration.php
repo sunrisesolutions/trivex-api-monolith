@@ -2,6 +2,9 @@
 
 namespace App\Entity\Event;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
+
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Entity\Organisation\IndividualMember;
@@ -16,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     normalizationContext={"groups"={"read"}},
  *     denormalizationContext={"groups"={"write"}}
  * )
+ * @ApiFilter(ExistsFilter::class, properties={"memberUuid"})
  * @ORM\Entity(repositoryClass="App\Repository\Event\RegistrationRepository")
  * @ORM\Table(name="event__registration")
  * @ORM\HasLifecycleCallbacks()
