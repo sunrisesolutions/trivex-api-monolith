@@ -1,0 +1,12 @@
+{% extends '@SonataAdmin/CRUD/edit.html.twig' %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/dropzone/dropzone.js') }}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/dropzone/dropzone.css') }}">
+{% endblock stylesheets %}
+
+

@@ -36,6 +36,11 @@ use Symfony\Component\Validator\Constraints\Valid;
 class OrganisationAdmin extends BaseAdmin
 {
     const CHILDREN = [IndividualMemberAdmin::class => 'organisation'];
+    const ADMIN_CODE = 'OrganisationAdmin';
+    const TEMPLATES = [
+        'list' => 'Admin/Organisation/Organisation/CRUD/list.html.twig',
+        'edit' => 'Admin/Organisation/Organisation/CRUD/edit.html.twig',
+    ];
 
     protected $action;
 
@@ -115,14 +120,16 @@ class OrganisationAdmin extends BaseAdmin
     {
         $listMapper
 //            ->addIdentifier('foundedOn', null, ['label' => 'form.label_founded_on'])
+//            ->add('logoName', null, [
+//                'label' => 'form.label_logo_name',
+//                'template'=>'Admin/Organisation/Organisation/Action/list__action__impersonate.html.twig'
+//            ])
             ->addIdentifier('name', null, ['label' => 'form.label_name'])
 //            ->addIdentifier('registrationNumber', null, ['label' => 'form.label_registration_number'])
 //            ->add('type', null, ['label' => 'form.label_type'])
             ->add('address', null, ['label' => 'form.label_address'])
-//            ->addIdentifier('logoName', null, ['label' => 'form.label_logo_name'])
             ->add('code', null, ['label' => 'form.label_code'])
-            ->add('subdomain', null, ['label' => 'form.label_subdomain'])
-//        templates/Admin/Organisation/IndividualMember/Action/list__action__impersonate.html.twig
+            ->add('subdomain', null, ['label' => 'form.label_subdomain'])//        templates/Admin/Organisation/IndividualMember/Action/list__action__impersonate.html.twig
         ;
 
         $listMapper->add('_action', 'actions', [
@@ -149,6 +156,7 @@ class OrganisationAdmin extends BaseAdmin
 
         $formMapper
             ->with('General')
+            ->add('logoName', null, ['label' => 'form.label_logo'])
             ->add('foundedOn', DatePickerType::class, [
                 'format' => 'dd-MM-yyyy',
                 'placeholder' => 'dd-mm-yyyy',
@@ -161,8 +169,7 @@ class OrganisationAdmin extends BaseAdmin
 //            ->add('logoName')
             ->add('code')
             ->add('subdomain')
-            ->add('freeonMessagingEnabled')
-        ;
+            ->add('freeonMessagingEnabled');
         $formMapper->end();
     }
 

@@ -17,7 +17,7 @@ sonata_admin:
     assets:
         extra_stylesheets:
             - bundles/sonataadmin/vendor/admin-lte/dist/css/skins/skin-purple-light.min.css
-            - bundles/magentacbookadmin/admin.css
+#            - bundles/magentacbookadmin/admin.css
         remove_stylesheets:
             - bundles/sonataadmin/vendor/admin-lte/dist/css/skins/skin-black.min.css
     dashboard:
@@ -41,7 +41,7 @@ sonata_admin:
                       label:        Organisation Account
                     - App\Admin\Event\EventAdmin
                     - App\Admin\Person\PersonAdmin
-                    - App\Admin\Organisation\OrganisationAdmin
+                    - OrganisationAdmin
                     - App\Admin\Messaging\PendingApprovalMessageAdmin
                     - App\Admin\Messaging\FreeOnMessageAdmin
                     - App\Admin\Messaging\MessageAdmin
@@ -52,3 +52,9 @@ sonata_block:
     blocks:
         sonata.admin.block.admin_list:
             contexts: [admin]
+sonata_doctrine_orm_admin:
+    templates:
+        form: ['Form/fields.html.twig']
+#        types:
+#            list:
+#                choice: '@MagentaSWarrantyAdmin/CRUD/list_choice.html.twig'

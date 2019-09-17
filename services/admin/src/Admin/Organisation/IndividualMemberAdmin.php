@@ -120,7 +120,9 @@ class IndividualMemberAdmin extends BaseAdmin
         $listMapper
             ->addIdentifier('person.name', null, ['label' => 'form.label_name'])
             ->add('person.email', null, ['label' => 'form.label_email'])
+            ->add('person.nationality.nricNumber', null, ['label' => 'form.label_id_number'])
             ->add('person.phoneNumber', null, ['label' => 'form.label_telephone'])
+            ->add('person.birthDate', null, ['label' => 'form.label_birth_date'])
             ->add('roles', null, [
                 'label' => 'form.label_roles',
                 'associated_property' => 'nameTrans'])

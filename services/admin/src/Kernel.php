@@ -69,7 +69,9 @@ class Kernel extends BaseKernel
                     continue;
                 }
                 $className = explode('\\', str_replace('Admin', '', $class));
-
+                if(empty($code = $class::ADMIN_CODE)) {
+                    $code = $class;
+                }
                 $def = new Definition();
                 $def->setClass($class);
                 $def->addTag('sonata.admin', [
@@ -78,12 +80,9 @@ class Kernel extends BaseKernel
                     'label_translator_strategy' => 'sonata.admin.label.strategy.underscore'
                 ]);
                 $def->addMethodCall('setTemplate', [ 'decide', 'CRUD/decide.html.twig' ]);
-                if(empty($code = $class::ADMIN_CODE)) {
-                    $code = $class;
-                }
-                $code = $class;
+
                 if (empty($entity = $class::ENTITY)) {
-                    $entity = str_replace('Admin\\', 'Entity\\', $code);
+                    $entity = str_replace('Admin\\', 'Entity\\', $class);
                     $entity = str_replace('AdminBundle', 'ModelBundle', $entity);
                     $entity = str_replace('Admin', '', $entity);
                 }
@@ -117,7 +116,10 @@ class Kernel extends BaseKernel
                     continue;
                 }
                 $className = explode('\\', str_replace('Admin', '', $class));
-                $def = $container->getDefinition($class);
+                if(empty($code = $class::ADMIN_CODE)) {
+                    $code = $class;
+                }
+                $def = $container->getDefinition($code);
                 if (!empty($children = $class::CHILDREN)) {
                     foreach ($children as $child => $property) {
                         $def->addMethodCall('addChild', [$container->getDefinition($child), $property]);

@@ -1,0 +1,579 @@
+{% extends '@SonataDoctrineORMAdmin/Form/form_admin_fields.html.twig' %}
+ {% block OrganisationAdmin_logoName_text_widget %}
+     <input type="hidden" id="{{sonata_admin.admin.uniqid}}_logoName" name="{{sonata_admin.admin.uniqid}}[logoName]" maxlength="25" class=" form-control" value="{{form.vars.value}}">
+     <form action="/file-upload"
+           class="dropzone"
+           id="my-awesome-dropzone"></form>
+
+     <form action="/file-upload"
+           class="dropzone"
+           id="my-awesome-dropzone123"></form>
+
+ {% endblock %}
+
+
+{% block sonata_type_collection_widget %}
+    {% if form.vars.name == 'appointments' %}
+        {% include '@MagentaSWarrantyAdmin/CRUD/Association/edit_one_to_many.html.twig' %}
+    {% else %}
+        {% if sonata_admin.field_description.mappingtype == constant('Doctrine\\ORM\\Mapping\\ClassMetadataInfo::ONE_TO_MANY') %}
+            {{ block('sonata_admin_orm_one_to_many_widget') }}
+        {% elseif sonata_admin.field_description.mappingtype == constant('Doctrine\\ORM\\Mapping\\ClassMetadataInfo::MANY_TO_MANY') %}
+            {{ block('sonata_admin_orm_many_to_many_widget') }}
+        {% else %}
+            INVALID MODE : {{ id }} - type : sonata_type_collection - mapping : {{ sonata_admin.field_description.mappingtype }}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+{% block product_detail_widget %}
+    {% set source_property_name = form.vars.source_property|replace({'.':'__'}) %}
+    <div class="form-group" id="sonata-ba-field-container-{{ form.vars.id }}">
+        {#{{ dump(form) }}#}
+        <span id="{{ form.vars.id }}-label">
+    {% if form.vars.label is not empty %}
+        <label class="control-label required" for="{{ form.vars.id }}">
+        {{ form.vars.label|trans({}, form.vars.translation_domain) }}
+        </label>
+    {% endif %}
+    </span>
+        <div class="sonata-ba-field sonata-ba-field-standard-natural">
+            <span id="{{ form.vars.id }}-spinner"><i class="fa fa-refresh fa-spin"
+                                                     style="font-size:20px;"></i></span>
+
+            {% if form.vars.type == "calculated_date" %}
+                <span id="{{ form.vars.id }}-value"
+                      style="border-bottom: dashed 1px #0088cc; text-decoration: none;">{#{{ form.vars.value is empty?'':form.vars.value|date('d-m-Y') }}#}</span>
+                <div class="input-group">
+                    {{ block('sonata_type_date_picker_widget_html') }}
+                </div>
+                <script type="text/javascript">
+                    window.addMonths = function (dt, n) {
+                        // n--;
+                        return new Date(dt.setMonth(dt.getMonth() + n));
+                    }
+
+                    jQuery(function ($) {
+                        $('#{{ form.vars.id }}-spinner').hide();
+                        $('#{{ datepicker_use_button ? 'dp_' : '' }}{{ form.vars.id }}').datetimepicker(
+                            {
+                                "pickTime": false,
+                                "pickDate": true,
+                                "useCurrent": true,
+                                "minDate": "1\/1\/2000",
+                                "maxDate": null,
+                                "showToday": true,
+                                "language": "en",
+                                "defaultDate": "",
+                                "disabledDates": [],
+                                "enabledDates": [],
+                                "icons": {
+                                    "time": "fa fa-clock-o",
+                                    "date": "fa fa-calendar",
+                                    "up": "fa fa-chevron-up",
+                                    "down": "fa fa-chevron-down"
+                                },
+                                "useStrict": false,
+                                "sideBySide": false,
+                                "daysOfWeekDisabled": [],
+                                "collapse": true,
+                                "calendarWeeks": false,
+                                "viewMode": "days",
+                                "minViewMode": "days",
+                                "useSeconds": false
+                            }
+                        ).hide();
+                        $(document).ready(function ($) {
+                            {% for cal in form.vars.calculations %}
+                            {%- if cal.when !='always' -%}
+                            if (typeof add{{ cal.when.value }}ICheckEvent_{{ form.vars.id }} == 'undefined') {
+                                add{{ cal.when.value }}ICheckEvent_{{ form.vars.id }} = true;
+                                $('#{{ form.parent.vars.id }}_{{ cal.when.value }}').on('ifChanged change', function (e) {
+                                    let $iCheck = $(this);
+                                    // console.log('url is ', url, 'is checked', $(this).is(":checked"));
+                                    let isChecked = $(this).is(":checked");
+                                    if (isChecked) {
+
+                                    } else {
+
+                                    }
+                                    {{ form.vars.id }}_status = 'pending';
+                                    productAction_{{ form.vars.product_property }} = 'update';
+                                });
+
+
+                                $('#{{ form.parent.vars.id }}_{{ source_property_name }}').on('change', function (e) {
+                                    // console.log('url is ', url, 'is checked', $(this).is(":checked"));
+
+                                    {{ form.vars.id }}_status = 'pending';
+                                    productAction_{{ form.vars.product_property }} = 'update';
+                                });
+
+                                $widget_{{ form.vars.id }}.on('change', function (e) {
+                                    // console.log('url is ', url, 'is checked', $(this).is(":checked"));
+
+                                    {#{{ form.vars.id }}_status = 'pending';#}
+                                    {#productAction_{{ form.vars.product_property }} = 'update';#}
+                                    // $(this).hide();
+                                    {#$value_{{ form.vars.id }}.show();#}
+                                });
+
+                                $value_{{ form.vars.id }}.on('click', function (e) {
+                                    $(this).hide();
+                                    $widget_{{ form.vars.id }}.show();
+                                })
+                            }
+
+                            {%- endif -%}
+                            {%- endfor -%}
+                        });
+
+                    });
+                </script>
+            {% else %}
+                <span id="{{ form.vars.id }}-value"> </span>
+            {% endif %}
+
+        </div>
+        {#spinner-${{ form.vars.id }}.hide();#}
+        <script>
+            (function ($) {
+                $spinner_{{ form.vars.id }} = $('#{{ form.vars.id }}-spinner');
+                $label_{{ form.vars.id }} = $('#{{ form.vars.id }}-label');
+                $value_{{ form.vars.id }} = $('#{{ form.vars.id }}-value');
+                $widget_{{ form.vars.id }} = $('#{{ form.vars.id }}');
+                productAction_{{ form.vars.product_property }} = 'initiate';
+                $widget_{{ form.vars.id }}.hide();
+
+                stringToDate = function (sourcePropertyValue) {
+                    let sourcePropertyDate = null;
+                    let sPVArray = sourcePropertyValue.split('-');
+                    if (sPVArray.length === 3) {
+
+                        sourcePropertyDate = new Date();
+                        sourcePropertyDate.setMonth(sPVArray[0]);
+                        sourcePropertyDate.setDate(sPVArray[1]);
+                        sourcePropertyDate.setYear(sPVArray[2]);
+                    }
+                    return sourcePropertyDate;
+                }
+
+                getProductDetailUrl = function (id) {
+                    let url = '{{ path(form.vars.detail_route, { 'id':form.vars.id}) }}';
+                    return url.replace('{{ form.vars.id }}', id);
+                }
+
+                onProductSelection_{{ form.vars.id }} = function () {
+                    productId_{{ form.vars.product_property }} = $productInput_{{ form.vars.id }}.val();
+
+                    let productId = $productInput_{{ form.vars.id }}.val();
+                    if (productId !== '' && productId != 'undefined' && typeof productId !== 'undefined') {
+                        let updateStatus = {{ form.vars.product_property }}_status;
+
+                        if (updateStatus === 'pending') {
+                            {{ form.vars.id }}_status = 'pending';
+                            if (!$spinner_{{ form.vars.id }}.is(":visible")) {
+                                $value_{{ form.vars.id }}.html('');
+                                $spinner_{{ form.vars.id }}.show();
+                            }
+                            return;
+                        } else if (updateStatus === 'done') {
+                            {{ form.vars.id }}_status = 'done';
+                            productId_{{ form.vars.id }} = productId_{{ form.vars.product_property }};
+
+                            {#let dataJSON = localStorage.getItem('{{ form.vars.product_property }}_data');#}
+                            let data = {{ form.vars.product_property }}_data;
+                            let _html = '';
+
+                            {% if form.vars.type == "image" %}
+                            _html += '<input type="hidden" name="{{ form.vars.full_name }}" value="' + data.id_image + '" />';
+                            _html += '<img style="display: none;" class="loading_{{ form.vars.id }}" src="' + data.admin_format + '" height="120"/>';
+
+                            {% elseif form.vars.type == "calculated_date" %}
+
+                            if (productAction_{{ form.vars.product_property }} === 'update' && $('#{{ form.parent.vars.id }}_{{ source_property_name }}').val() !== '') {
+                                let sourcePropertyDate = null;
+                                let sourcePropertyValue = $('#{{ form.parent.vars.id }}_{{ source_property_name }}').val();
+                                let sPVArray = sourcePropertyValue.split('-');
+                                if (sPVArray.length === 3) {
+
+                                    sourcePropertyDate = new Date();
+                                    sourcePropertyDate.setDate(sPVArray[0]);
+                                    sourcePropertyDate.setMonth(parseInt(sPVArray[1]) - 1);
+                                    sourcePropertyDate.setYear(sPVArray[2]);
+                                    console.log('beginning', sourcePropertyDate);
+                                    {% for cal in form.vars.calculations %}
+                                    {% if cal.when !='always' %}
+                                    let chckValue = $('#{{ form.parent.vars.id }}_{{ cal.when.value }}').iCheck('update')[0].checked;
+                                    {% if(cal.when.equal) %}
+                                    if (chckValue) {
+                                        {% if cal.type == 'product' %}
+                                        sourcePropertyDate = window.addMonths(sourcePropertyDate, parseInt(data.{{ cal.value }}));
+                                        {% endif %}
+                                    } else {
+
+                                    }
+
+                                    {% endif %}
+                                    {% else %} // cal.when == 'always'
+                                    {% if cal.type == 'product' %}
+                                    {#console.log('always', '{{ cal.value }}', sourcePropertyDate);#}
+                                    sourcePropertyDate = window.addMonths(sourcePropertyDate, parseInt(data.{{ cal.value }}));
+                                    // console.log('always', sourcePropertyDate);
+                                    {% endif %}
+                                    {% endif %}
+                                    {% endfor %}
+                                }
+                                let finalDate = sourcePropertyDate;
+
+                                let day = finalDate.getDate();
+                                let dayStr = '';
+                                let monthStr = '';
+                                if (day < 10) {
+                                    dayStr = '0' + day;
+                                } else {
+                                    dayStr = "" + day;
+                                }
+                                let month = finalDate.getMonth() + 1;
+                                if (month < 10) {
+                                    monthStr = '0' + month;
+                                } else {
+                                    monthStr = '' + month;
+                                }
+                                let finalDateStr = dayStr + '-' + monthStr + '-' + finalDate.getFullYear();
+                                _html += finalDateStr + ' <i class="fa fa-pencil"></i>';
+                                $widget_{{ form.vars.id }}.val(finalDateStr);
+                                console.log('from ajax ', $widget_{{ form.vars.id }}.val());
+                            } else {
+                                _html += '{{ form.vars.value is empty?'':form.vars.value|date('d-m-Y') }}' + ' <i class="fa fa-pencil"></i>';
+                                console.log('from form');
+                            }
+                            {% else %}
+                            {#_html += '<input type="hidden" name="{{ form.vars.full_name }}" value="{{ form.vars.value.id is defined?form.vars.value.id:form.vars.value }}" />';#}
+                            _html += '<input type="hidden" name="{{ form.vars.full_name }}" value="' + data.{{ form.vars.type }}+ '" />';
+                            _html += data.{{ form.vars.type }} + ' {{ form.vars.appended_value }}';
+                            {% endif %}
+                            $value_{{ form.vars.id }}.html(_html);
+
+                            {% if form.vars.type == "image" %}
+                            $value_{{ form.vars.id }}.find('.loading_{{ form.vars.id }}').load(function (e) {
+                                $spinner_{{ form.vars.id }}.hide();
+                                $(this).show();
+                            })
+                            {% else %}
+                            $spinner_{{ form.vars.id }}.hide();
+                            {% endif %}
+                            return;
+                            {#localStorage.removeItem('{{ form.vars.product_property }}_data');#}
+                        } else {
+                            updateStatus = {{ form.vars.product_property }}_status = 'pending';
+                            {{ form.vars.id }}_status = 'pending';
+                        }
+
+                        let jqxhr = $.get(getProductDetailUrl(productId), function (data) {
+                                updateStatus = {{ form.vars.product_property }}_status = 'done';
+                                // alert("hello data " + JSON.stringify(data));
+                                    {#localStorage.setItem('{{ form.vars.product_property }}_data', JSON.stringify(data));#}
+                                    {{ form.vars.product_property }}_data = data;
+                            })
+                                .fail(function () {
+                                    updateStatus = {{ form.vars.product_property }}_status = 'error';
+                                    {#setTimeout(onProductSelection_{{ form.vars.id }}(), 1000);#}
+                                })
+                        ;
+                    }
+                }
+
+                $(document).ready(function ($) {
+                    $productInput_{{ form.vars.id }} = $('input[name = "{{ form.parent.vars.id }}[{{ form.vars.product_property }}]"]');
+                    productInputType_{{ form.vars.id }} = 'input';
+                    {{ form.vars.id }}_status = '';
+
+                    if ($productInput_{{ form.vars.id }}.length === 0) {
+                        $productInput_{{ form.vars.id }} = $("#{{ form.parent.vars.id }}_{{ form.vars.product_property }} option:selected");
+                        productInputType_{{ form.vars.id }} = 'select';
+                    }
+
+                    if (typeof(productId_{{ form.vars.product_property }}) === 'undefined') {
+                        productId_{{ form.vars.product_property }} = $productInput_{{ form.vars.id }}.val();
+                        {{ form.vars.product_property }}_data = {};
+                        {{ form.vars.product_property }}_status = '';
+                    }
+
+                    productId_{{ form.vars.id }} = productId_{{ form.vars.product_property }};
+                    onProductSelection_{{ form.vars.id }}();
+
+                    setInterval(function () {
+                        if (productInputType_{{ form.vars.id }} === 'select') {
+                            $productInput_{{ form.vars.id }} = $("#{{ form.parent.vars.id }}_{{ form.vars.product_property }} option:selected");
+                        }
+
+                        if (productId_{{ form.vars.product_property }} !== $productInput_{{ form.vars.id }}.val()) {
+                            productAction_{{ form.vars.product_property }} = 'update';
+                            {{ form.vars.product_property }}_status = '';
+                            onProductSelection_{{ form.vars.id }}();
+                        } else if ({{ form.vars.id }}_status === 'pending' || productId_{{ form.vars.id }} !== productId_{{ form.vars.product_property }}) {
+                            onProductSelection_{{ form.vars.id }}();
+                        }
+                    }, 500);
+
+                });
+            })(jQuery);
+
+        </script>
+        {#{{ dump(form) }}#}
+    </div>
+{% endblock %}
+
+{% block media_collection_widget %}
+{% endblock media_collection_widget %}
+
+{% block many_to_many_thing_widget %}
+    {% spaceless %}
+        <style>
+            .n2n-entity-action-container {
+                padding-top: 10px;
+                text-align: right;
+            }
+
+            .n2n-entity-action i {
+                font-size: 18px;
+            }
+
+            .n2n-checkbox li {
+                /*display: flex;*/
+                /*justify-content: space-between;*/
+                /*align-items: center;*/
+            }
+
+            .n2n-checkbox li .checkbox {
+                /*flex-grow: 5;*/
+            }
+
+            .n2n-checkbox li .n2n-entity-action-container {
+                /*flex-grow: 2;*/
+            }
+
+            .n2n-checkbox .checkbox {
+                display: block;
+                padding-right: 7px;
+            }
+
+            .n2n-entity-action {
+                display: inline;
+                padding-right: 3px;
+            }
+
+            .remove-form-group .editable-buttons {
+                display: block;
+                padding-top: 7px;
+                text-align: center;
+            }
+
+            .remove-form-group .editable-buttons .btn {
+                margin: 3px;
+            }
+        </style>
+        {% spaceless %}
+            {% set attr = attr|merge({'class': attr.class|default('') ~ form.vars.name ~ ' n2n-checkbox list-unstyled'}) %}
+
+            {% set createRouteParams = form.vars.create_route.route_params %}
+            {% set createUrl = path(form.vars.create_route.route_name, createRouteParams) %}
+
+            <input style="margin-bottom: 5px;" type="text" id="{{ form.vars.id }}_input" class="form-control add-item"
+                   data-url="{{ createUrl }}"
+                   placeholder="Type to create a new item"/>
+
+            {#{{ dump(form) }}#}
+
+            {% set routerIdParam = form.vars.router_id_param %}
+
+            <script>
+                formData_{{ form.vars.name }} = [
+                    {% for child in form %}
+                    {% set updateRouteParams = form.vars.update_route.route_params|merge({(routerIdParam):child.vars.value}) %}
+                    {% set deleteRouteParams = form.vars.delete_route.route_params|merge({(routerIdParam):child.vars.value}) %}
+                    {
+                        'objectId': '{{ child.vars.value }}',
+                        'adminCode': '{{ child.vars.sonata_admin_code }}',
+                        'objectLabel': '{{ child.vars.label }}',
+                        {#'updateUrl': '{{ path('sonata_admin_set_object_field_value',{'context': 'list','field': form.vars.source,'objectId': child.vars.value,'code': sonata_admin.admin.code}) }}',#}
+                        'updateUrl': '{{ path(form.vars.update_route.route_name, updateRouteParams) }}',
+                        'deleteUrl': '{{ path(form.vars.delete_route.route_name, deleteRouteParams) }}',
+                        'widget': '{% spaceless %}{{- form_widget(child, {
+                            'horizontal': false,
+                            'horizontal_input_wrapper_class': '',
+                            'translation_domain': choice_translation_domain
+                        })|e('js') -}} {% endspaceless %}'
+                    },
+                    {% endfor %}
+                ];
+
+                (function ($) {
+
+                    /* ----------------------------------------------- */
+                    /* ----------------------------------------------- */
+                    /* OnLoad Page */
+                    $(document).ready(function ($) {
+                        addChoice_{{ form.vars.id }} = function (choice) {
+                            let $n2nCheckbox = $('.n2n-checkbox.{{ form.vars.name }}')
+                            let choiceHtml = '<li>' +
+                                '<div class="row choice-container-' + choice.objectId + '">\n' +
+                                '  <div class="col-md-9">'
+                                +
+                                choice.widget
+                                + '</div>' +
+                                '<div class="n2n-entity-action-container col-md-3">'
+                                +
+                                '<span class="n2n-entity-action n2n-entity-editable" tabindex="0" class="btn btn-default"\n' +
+                                '                          role="button"\n' +
+                                '                          data-operation="update" data-type="text" data-value="' + choice.objectLabel + '"\n' +
+                                '                          data-title="Name" data-pk="' + choice.objectId + '"\n' +
+                                '                          data-url="' + choice.updateUrl + '"' +
+                                '                          data-toggle="popover" data-trigger="manual" data-placement="left"\n' +
+                                '                          data-content="<form class=\'form-inline editableform\'><div class=\'control-group form-group\'><div><div class=\'editable-input\' style=\'position: relative;\'><input value=\'\' type=\'text\' class=\'n2n-entity form-control input-sm\' style=\'padding-right: 24px;\' /><span class=\'editable-clear-x\'></span></div><div class=\'editable-buttons\'><button type=\'button\' class=\'btn btn-primary btn-sm n2n-entity editable-submit\'><i class=\'glyphicon glyphicon-ok\'></i></button><button type=\'button\' class=\'btn btn-default btn-sm n2n-entity editable-cancel\'><i class=\'glyphicon glyphicon-remove\'></i></button></div></div><div class=\'editable-error-block help-block\' style=\'display: none;\'></div></div></form>">\n' +
+                                '                    <i class="fa fa-edit"> </i>\n' +
+                                '                    </span>'
+                                +
+                                '<span class="n2n-entity-action n2n-entity-remove" tabindex="0" class="btn btn-default"\n' +
+                                '                                      role="button"\n' +
+                                '                                      data-operation="delete" data-type="" data-value="' + choice.objectLabel + '"\n' +
+                                '                                      data-title="Please confirm your action" data-pk="' + choice.objectId + '"\n' +
+                                '                                      data-url="' + choice.deleteUrl + '" ' +
+                                '                                      data-toggle="popover" data-trigger="manual" data-placement="left"\n' +
+                                '                                      data-content="<form class=\'n2n-entity remove-form\'><div class=\'control-group form-group remove-form-group\'><div>\n' +
+                                '                Would you like to remove <code>' + choice.objectLabel + '</code> ?\n' +
+                                '                <div class=\'editable-buttons\'><button type=\'button\' class=\'btn btn-danger btn-sm n2n-entity editable-submit form-control\'><i class=\'glyphicon glyphicon-ok\'> </i> Yes, Remove this Item</button><button type=\'button\' class=\'btn btn-default btn-sm n2n-entity editable-cancel form-control\'><i class=\'glyphicon glyphicon-remove\'> </i> Cancel</button></div></div><div class=\'editable-error-block help-block\' style=\'display: none;\'></div></div></form>">\n' +
+                                '                <i class="fa fa-trash"></i>\n' +
+                                '                    </span>'
+                                +
+                                '</div>'
+                                + '</div>'
+                                +
+                                '</li>'
+                            $n2nCheckbox.append(choiceHtml);
+                            $n2nCheckbox.find('input').iCheck({
+                                checkboxClass: 'icheckbox_square-blue',
+                            });
+
+                            let $popover = $('.choice-container-' + choice.objectId + ' .n2n-entity-action[data-toggle="popover"]');
+
+                            initiatePopover_{{ form.vars.id }}($popover);
+                        }
+
+                        let formData = formData_{{ form.vars.name }};
+                        for (let i = 0; i < formData.length; i++) {
+                            let itemData = formData[i];
+                            addChoice_{{ form.vars.id }}(itemData);
+                        }
+                    });
+
+                })(jQuery);
+
+            </script>
+        {% endspaceless %}
+
+        <ul {{ block('widget_container_attributes') }}>
+        </ul>
+
+    {% endspaceless %}
+    <script>
+        (function ($) {
+            initiatePopover_{{ form.vars.id }} = function ($popover) {
+                $popover.popover({
+                    html: true,
+                    template: '<div class="popover editable-container editable-popup" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
+                });
+
+                $popover.on('click', function () {
+                    let $thisPopover = $(this);
+                    $thisPopover.popover('show');
+                });
+
+                $popover.on('inserted.bs.popover', function () {
+                    let $thisPopover = $(this);
+                    $('.n2n-entity.editable-cancel').on('click', function () {
+                        $thisPopover.popover('hide');
+                    });
+
+                    $('.n2n-entity.editable-submit').on('click', function (e) {
+                        e.preventDefault();
+                        let itemCount = {{ form.children|length }};
+
+                        let operation = $thisPopover.data('operation');
+                        operation = operation.toUpperCase();
+                        let value = $thisPopover.data('value');
+                        let actionUrl = $thisPopover.data('url');
+                        let id = $thisPopover.data('pk');
+
+                        // alert( url + ' ---  ' + value + ' --- ' + operation );
+                        $.post(actionUrl, { {{ form.vars.label_property }}:
+                        value
+                    }).
+                        done(function (actionResponse) {
+                            if (operation === 'UPDATE') {
+                                $('.choice-container-' + id + ' span.control-label__text').text(actionResponse.{{ form.vars.label_property }});
+                                $thisPopover.popover('hide');
+                            } else if (operation === 'DELETE') {
+                                itemCount--;
+                                $('.choice-container-' + id).parents('li').remove();
+                                $thisPopover.popover('hide');
+
+                            }
+                        });
+                    });
+
+                    $('input.n2n-entity').val($thisPopover.data('value'));
+
+                    $('input.n2n-entity').change(function (e) {
+                        $thisPopover.data('value', $(this).val());
+                    })
+                })
+            };
+
+            $(document).ready(function ($) {
+                let $addItem = $('#{{ form.vars.id }}_input');
+                let itemCount = {{ form.children|length }};
+
+                $addItem.bind("enterKey", function (e) {
+                    console.log('add new Item');
+                });
+
+                $addItem.keydown(function (e) {
+                    if (e.keyCode === 13) {
+                        console.log('enterkey down on ', $(this));
+
+                        $(this).trigger("enterKey");
+                        e.preventDefault();
+
+                        let $thisInput = $(this);
+                        $thisInput.prop('disabled', true);
+
+                        let actionUrl = $(this).data('url');
+                        $.post(actionUrl, { {{ form.vars.label_property }}:
+                        $(this).val()
+                    } ).
+                        done(function (actionResponse) {
+                            console.log('posting here');
+                            itemCount++;
+                            let newChoice = {
+                                objectId: actionResponse.id,
+                                objectLabel: actionResponse.{{ form.vars.label_property }},
+                                widget: '<div class="checkbox">' +
+                                '<label>' +
+                                '<input type="checkbox" id="{{ form.vars.id }}_' + itemCount + '" ' +
+                                'name="{{ form.vars.full_name }}[]" value="' + actionResponse.id + '" checked="checked" />' +
+                                '<span class="control-label__text">\n'
+                                +
+                                actionResponse.{{ form.vars.label_property }} +
+                                '</span></label></div>'
+                            }
+                            addChoice_{{ form.vars.id }}(newChoice);
+                            $thisInput.prop('disabled', false);
+                            $thisInput.val('');
+                        });
+                    }
+                });
+            });
+        })(jQuery);
+    </script>
+{% endblock %}
