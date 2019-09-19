@@ -161,6 +161,26 @@ class IndividualMember
     }
 
     /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function fixData()
+    {
+        $foundMsgAdmin = false;
+        /** @var Role $role */
+        foreach ($this->roles as $role) {
+            if ($role->getName() === 'ROLE_MSG_ADMIN' or $role->getName() === 'ROLE_ORG_ADMIN') {
+                $foundMsgAdmin = true;
+                break;
+            }
+        }
+        $this->messageAdminGranted = $foundMsgAdmin;
+//        if (empty($this->optionsSelectedAt) && !empty($this->selectedOptions)) {
+//            $this->optionsSelectedAt = new \DateTime();
+//        }
+    }
+
+    /**
      * @return bool
      * @Groups("read_member")
      */
@@ -533,6 +553,11 @@ class IndividualMember
 
         return $this;
     }
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $messageAdminGranted;
 
     /**
      * @return Collection|Registration[]
@@ -914,5 +939,15 @@ class IndividualMember
     {
         $this->groupName = $groupName;
     }
+    public function getMessageAdminGranted(): ?bool
+    {
+        return $this->messageAdminGranted;
+    }
 
+    public function setMessageAdminGranted(?bool $messageAdminGranted): self
+    {
+        $this->messageAdminGranted = $messageAdminGranted;
+
+        return $this;
+    }
 }

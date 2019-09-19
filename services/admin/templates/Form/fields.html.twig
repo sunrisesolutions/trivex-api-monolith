@@ -5,9 +5,21 @@
            class="dropzone"
            id="my-awesome-dropzone"></form>
 
-     <form action="/file-upload"
+     <img src="{{ sonata_admin.admin.subject.logoReadUrl }}" alt="" height="200" />
+{#     {{ dump(sonata_admin.admin.subject.logoWriteForm) }}#}
+     {% set logoWriteForm = sonata_admin.admin.subject.logoWriteForm %}
+
+     <form action="{{ logoWriteForm.attributes.action }}"
            class="dropzone"
-           id="my-awesome-dropzone123"></form>
+           id="my-awesome-dropzone123">
+         <input type="hidden" name="acl" value="{{ logoWriteForm.inputs.acl }}" />
+         <input type="hidden" name="key" value="{{ logoWriteForm.filePath }}" />
+         <input type="hidden" name="X-Amz-Credential" value="{{ logoWriteForm.inputs['X-Amz-Credential'] }}" />
+         <input type="hidden" name="X-Amz-Algorithm" value="{{ logoWriteForm.inputs['X-Amz-Algorithm'] }}" />
+         <input type="hidden" name="X-Amz-Date" value="{{ logoWriteForm.inputs['X-Amz-Date'] }}" />
+         <input type="hidden" name="X-Amz-Signature" value="{{ logoWriteForm.inputs['X-Amz-Signature'] }}" />
+         <input type="hidden" name="Policy" value="{{ logoWriteForm.inputs.Policy }}" />
+     </form>
 
  {% endblock %}
 

@@ -127,8 +127,8 @@ class OrganisationAdmin extends BaseAdmin
             ->addIdentifier('name', null, ['label' => 'form.label_name'])
 //            ->addIdentifier('registrationNumber', null, ['label' => 'form.label_registration_number'])
 //            ->add('type', null, ['label' => 'form.label_type'])
-            ->add('address', null, ['label' => 'form.label_address'])
             ->add('code', null, ['label' => 'form.label_code'])
+            ->add('address', null, ['label' => 'form.label_address'])
             ->add('subdomain', null, ['label' => 'form.label_subdomain'])//        templates/Admin/Organisation/IndividualMember/Action/list__action__impersonate.html.twig
         ;
 
