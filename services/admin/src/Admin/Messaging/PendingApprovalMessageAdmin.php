@@ -127,7 +127,7 @@ class PendingApprovalMessageAdmin extends BaseAdmin
         );
         $listMapper
             ->add('subject', null, ['label' => 'form.label_subject'])
-            ->add('body', null, ['label' => 'form.label_body'])
+            ->add('body', 'html', ['label' => 'form.label_body'])
             ->add('status', null, ['label' => 'form.label_status']);
 
 
