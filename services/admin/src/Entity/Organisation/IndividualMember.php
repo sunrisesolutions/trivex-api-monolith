@@ -5,6 +5,9 @@ namespace App\Entity\Organisation;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Entity\Messaging\Delivery;
+use App\Entity\Messaging\Message;
+use App\Entity\Messaging\NotifSubscription;
 use App\Entity\Person\Person;
 use App\Entity\Event\Registration;
 use App\Filter\Organisation\ConnectedToMemberUuidFilter;
@@ -52,6 +55,8 @@ use App\Controller\Organisation\SendEmailToIndividualMember;
 class IndividualMember
 {
     const TYPE_SUBSCRIPTION = 'SUBSCRIPTION';
+
+    private $messageDeliveryCache = [];
 
     /**
      * @var int|null The Event Id
@@ -153,6 +158,26 @@ class IndividualMember
         if (empty($this->uuid)) {
             $this->uuid = AppUtil::generateUuid('MEMBER');
         }
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function fixData()
+    {
+        $foundMsgAdmin = false;
+        /** @var Role $role */
+        foreach ($this->roles as $role) {
+            if ($role->getName() === 'ROLE_MSG_ADMIN' or $role->getName() === 'ROLE_ORG_ADMIN') {
+                $foundMsgAdmin = true;
+                break;
+            }
+        }
+        $this->messageAdminGranted = $foundMsgAdmin;
+//        if (empty($this->optionsSelectedAt) && !empty($this->selectedOptions)) {
+//            $this->optionsSelectedAt = new \DateTime();
+//        }
     }
 
     /**
@@ -296,6 +321,16 @@ class IndividualMember
     }
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Messaging\NotifSubscription", mappedBy="individualMember")
+     */
+    private $notifSubscriptions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Messaging\Delivery", mappedBy="recipient")
+     */
+    private $deliveries;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Event\Registration", mappedBy="individualMember")
      */
     private $registrations;
@@ -384,6 +419,71 @@ class IndividualMember
         $this->toConnections = new ArrayCollection();
         $this->createdAt = new \DateTime();
         $this->roles = new ArrayCollection();
+        $this->deliveries = new ArrayCollection();
+        $this->notifSubscriptions = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection|NotifSubscription[]
+     */
+    public function getNotifSubscriptions(): Collection
+    {
+        return $this->notifSubscriptions;
+    }
+
+    public function addNotifSubscription(NotifSubscription $notifSubscription): self
+    {
+        if (!$this->notifSubscriptions->contains($notifSubscription)) {
+            $this->notifSubscriptions[] = $notifSubscription;
+            $notifSubscription->setIndividualMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotifSubscription(NotifSubscription $notifSubscription): self
+    {
+        if ($this->notifSubscriptions->contains($notifSubscription)) {
+            $this->notifSubscriptions->removeElement($notifSubscription);
+            // set the owning side to null (unless already changed)
+            if ($notifSubscription->getIndividualMember() === $this) {
+                $notifSubscription->setIndividualMember(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isMessageDelivered(Message $message)
+    {
+        if (empty($this->getMessageDelivery($message))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Message $message
+     * @return Delivery|mixed|null
+     */
+    public function getMessageDelivery(Message $message)
+    {
+        if (array_key_exists($message->getId(), $this->messageDeliveryCache)) {
+            if ($this->messageDeliveryCache[$message->getId()]) {
+                return $this->messageDeliveryCache[$message->getId()];
+            }
+        }
+        $c = Criteria::create();
+        $expr = Criteria::expr();
+
+        $c->where($expr->eq('message', $message));
+        $deliveries = $this->deliveries->matching($c);
+        if ($deliveries->count() > 0) {
+            return $this->messageDeliveryCache[$message->getId()] = $deliveries->first();
+        }
+
+        return null;
     }
 
     /**
@@ -421,6 +521,43 @@ class IndividualMember
      * @Groups({"read_member"})
      */
     private $enabled = true;
+
+
+    /**
+     * @return Collection|Delivery[]
+     */
+    public function getDeliveries(): Collection
+    {
+        return $this->deliveries;
+    }
+
+    public function addDelivery(Delivery $delivery): self
+    {
+        if (!$this->deliveries->contains($delivery)) {
+            $this->deliveries[] = $delivery;
+            $delivery->setRecipient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDelivery(Delivery $delivery): self
+    {
+        if ($this->deliveries->contains($delivery)) {
+            $this->deliveries->removeElement($delivery);
+            // set the owning side to null (unless already changed)
+            if ($delivery->getRecipient() === $this) {
+                $delivery->setRecipient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $messageAdminGranted;
 
     /**
      * @return Collection|Registration[]
@@ -786,6 +923,7 @@ class IndividualMember
     {
         $this->email = $email;
     }
+
     /**
      * @return string|null
      */
@@ -801,5 +939,15 @@ class IndividualMember
     {
         $this->groupName = $groupName;
     }
+    public function getMessageAdminGranted(): ?bool
+    {
+        return $this->messageAdminGranted;
+    }
 
+    public function setMessageAdminGranted(?bool $messageAdminGranted): self
+    {
+        $this->messageAdminGranted = $messageAdminGranted;
+
+        return $this;
+    }
 }

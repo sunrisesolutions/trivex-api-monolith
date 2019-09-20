@@ -6,8 +6,8 @@ namespace App\Filter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractContextAwareFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\PropertyHelperTrait;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use App\Entity\Delivery;
-use App\Entity\Message;
+use App\Entity\Messaging\Delivery;
+use App\Entity\Messaging\Message;
 use Doctrine\ORM\QueryBuilder;
 
 final class NotLikeFilter extends AbstractContextAwareFilter

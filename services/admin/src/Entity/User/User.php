@@ -81,7 +81,7 @@ class User implements UserInterface
     {
         $data = [];
         /** @var IndividualMember $im */
-        foreach ($this->organisationUsers as $im) {
+        foreach ($this->getIndividualMembers() as $im) {
             $member['accessToken'] = $im->getAccessToken();
             $member['id'] = $im->getId();
             $member['uuid'] = $im->getUuid();

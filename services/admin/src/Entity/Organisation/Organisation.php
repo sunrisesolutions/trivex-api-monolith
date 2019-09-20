@@ -8,6 +8,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Entity\Event\Event;
+use App\Entity\Messaging\Message;
 use App\Util\AppUtil;
 use App\Util\AwsS3Util;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -51,6 +52,7 @@ class Organisation
         $c->andWhere($expr->eq('messageAdminGranted', true));
         return $this->individualMembers->matching($c);
     }
+
     public function getRole($name)
     {
         /** @var \App\Entity\Organisation\Role $role */
@@ -72,7 +74,7 @@ class Organisation
                 $this->memberPage = 1;
             }
             $page = $this->memberPage;
-            if ( ($this->memberPage - 1) * $limit > $this->memberCount) {
+            if (($this->memberPage - 1) * $limit > $this->memberCount) {
                 $this->memberPage = $this->memberCount = null;
 
                 return false;
@@ -108,7 +110,7 @@ class Organisation
     public function initiateUuid()
     {
         if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid();
+            $this->uuid = AppUtil::generateUuid('ORG');
             if (empty($this->code)) {
                 $this->code = $this->uuid;
             }
@@ -169,7 +171,7 @@ class Organisation
     {
         $path = $this->buildLogoPath();
 
-        return array_merge(['filePath' => AwsS3Util::getInstance()->getConfig()['directory'].'/'. $path], AwsS3Util::getInstance()->getObjectWriteForm($path));
+        return array_merge(['filePath' => AwsS3Util::getInstance()->getConfig()['directory'].'/'.$path], AwsS3Util::getInstance()->getObjectWriteForm($path));
     }
 
     /**
@@ -229,9 +231,45 @@ class Organisation
     private $parent;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Messaging\Message", mappedBy="organisation")
+     */
+    private $messages;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Event\Event", mappedBy="organisation")
      */
     private $events;
+
+    /**
+     * @return Collection|Message[]
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): self
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages[] = $message;
+            $message->setOrganisation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): self
+    {
+        if ($this->messages->contains($message)) {
+            $this->messages->removeElement($message);
+            // set the owning side to null (unless already changed)
+            if ($message->getOrganisation() === $this) {
+                $message->setOrganisation(null);
+            }
+        }
+
+        return $this;
+    }
 
     /**
      * @return Collection|Event[]
@@ -304,7 +342,8 @@ class Organisation
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
-    public function updateTs() {
+    public function updateTs()
+    {
         $this->updatedAt = new \DateTime();
     }
 
@@ -359,6 +398,7 @@ class Organisation
     {
         $this->children = new ArrayCollection();
         $this->individualMembers = new ArrayCollection();
+        $this->messages = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
 

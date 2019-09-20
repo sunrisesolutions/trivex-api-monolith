@@ -6,7 +6,7 @@ namespace App\Filter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractContextAwareFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\PropertyHelperTrait;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use App\Entity\Delivery;
+use App\Entity\Messaging\Delivery;
 use Doctrine\ORM\QueryBuilder;
 
 final class GroupByFilter extends AbstractContextAwareFilter

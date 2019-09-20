@@ -44,7 +44,7 @@ class Attendee
     public function initiateUuid()
     {
         if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid();
+            $this->uuid = AppUtil::generateUuid('ATTENDEE');
         }
     }
 
