@@ -2,7 +2,7 @@
 {#{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}#}
 {% block field %}
   <a target="_blank" class="btn btn-primary"
-     href="https://trivesg.com/events/{{ object.id }}"> Go to page </a>
+     href="https://{{ object.organisation.subdomain }}.whatwechat.net/events/{{ object.id }}/registration"> Go to page </a>
   <a target="_blank" class="btn btn-primary"
      href="https://qrcode.magentapulse.com/qr-code/https://{{ object.organisation.subdomain }}.whatwechat.net/events/{{ object.id }}/registration.png"> Get the QR Code </a>
   <a target="_blank" class="btn btn-success"
