@@ -66,7 +66,7 @@ class User implements UserInterface
         $orgs = new ArrayCollection();
         /** @var IndividualMember $organisationUser */
         foreach ($this->getIndividualMembers() as $organisationUser) {
-            if (in_array(self::ROLE_ORG_ADMIN, $this->getRoles())) {
+            if (in_array(Role::ROLE_ORGANISATION_ADMIN, $this->getRoles())) {
                 $orgs->add($organisationUser->getOrganisation());
             }
         }
