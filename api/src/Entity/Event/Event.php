@@ -69,6 +69,7 @@ class Event
     }
 
     /**
+     * @Groups({"read"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\Organisation", inversedBy="events")
      * @ORM\JoinColumn(name="id_organisation", referencedColumnName="id")
      */
