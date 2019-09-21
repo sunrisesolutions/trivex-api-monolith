@@ -37,7 +37,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 class User implements UserInterface
 {
     const TTL = 1800;
-    const ROLE_ORG_ADMIN = 'ROLE_ORG_ADMIN';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
 
     /**
      * @var int|null The User Id
@@ -221,6 +221,15 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function fixAdminRole(){
+        $roles = $this->getRoles();
+        if (array_search(Role::ROLE_ORGANISATION_ADMIN, $roles)) {
+            if (!array_search(self::ROLE_ADMIN, $roles)) {
+                $this->roles[] = self::ROLE_ADMIN;
+            }
+        }
     }
 
     /**

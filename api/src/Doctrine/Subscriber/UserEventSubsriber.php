@@ -94,6 +94,7 @@ class UserEventSubsriber implements ORMEventSubscriber
             if (empty($user->getPlainPassword()) && empty($user->getPassword())) {
                 $user->setPlainPassword(rand(0, 10 * 1000));
             }
+            $user->fixAdminRole();
         }
         //////// END MODIF 001 ///////
 
