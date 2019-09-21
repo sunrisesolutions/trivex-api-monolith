@@ -615,6 +615,7 @@ trait BaseAdminTrait
         $object
     )
     {
+        parent::preValidate($object);
         $classname = $this->getClass();
         $reflection = new \ReflectionObject(new $classname);
         if ($reflection->hasProperty('organisation')) {
@@ -632,4 +633,14 @@ trait BaseAdminTrait
             $object->setUpdatedAt(new \DateTime());
         }
     }
+
+    public function prePersist($object)
+    {
+        parent::prePersist($object);
+        if (method_exists($object, 'setOrganisation')) {
+        }
+    }
+
+
+
 }

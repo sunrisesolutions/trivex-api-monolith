@@ -6,7 +6,6 @@ use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\Event\Attendee;
 use App\Entity\Organisation\IndividualMember;
 use App\Security\JWTUser;
-use http\Exception\InvalidArgumentException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
