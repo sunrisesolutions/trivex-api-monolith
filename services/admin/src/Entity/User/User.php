@@ -224,12 +224,12 @@ class User implements UserInterface
     }
 
     public function fixAdminRole(){
-        $roles = $this->getRoles();
-        if (array_search(Role::ROLE_ORGANISATION_ADMIN, $roles)) {
-            if (!array_search(self::ROLE_ADMIN, $roles)) {
-                $this->roles[] = self::ROLE_ADMIN;
-            }
-        }
+//        $roles = $this->getRoles();
+//        if (array_search(Role::ROLE_ORGANISATION_ADMIN, $roles)) {
+//            if (!array_search(self::ROLE_ADMIN, $roles)) {
+////                $this->roles[] = self::ROLE_ADMIN;
+//            }
+//        }
     }
 
     /**
