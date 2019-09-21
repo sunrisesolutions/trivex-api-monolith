@@ -11,7 +11,6 @@
 namespace App\Doctrine\Subscriber;
 
 use App\Doctrine\Module\ORMEventSubscriber;
-use App\Entity\Organisation\IndividualMember;
 use App\Entity\User\User;
 use App\Util\User\CanonicalFieldsUpdater;
 use App\Util\User\PasswordUpdaterInterface;
@@ -95,6 +94,7 @@ class UserEventSubsriber implements ORMEventSubscriber
             if (empty($user->getPlainPassword()) && empty($user->getPassword())) {
                 $user->setPlainPassword(rand(0, 10 * 1000));
             }
+            $user->fixAdminRole();
         }
         //////// END MODIF 001 ///////
 
@@ -133,13 +133,7 @@ class UserEventSubsriber implements ORMEventSubscriber
         $object = $args->getObject();
         if ($object instanceof User) {
             if (empty($person = $object->getPerson())) {
-                $members = $person->getIndividualMembers();
-                if ($members->count() > 0) {
-                    /** @var IndividualMember $member */
-                    foreach ($members as $member) {
-//                        if($member->hasRole(IndividualMember::RO))
-                    }
-                }
+
             }
         }
     }
