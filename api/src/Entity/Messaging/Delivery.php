@@ -22,6 +22,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(
  *     attributes={
+ *     "pagination_items_per_page"=100,
  *     "access_control"="is_granted('ROLE_USER')",
  *     "order"={"id": "DESC"}
  * },
@@ -30,7 +31,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * )
  * @ApiFilter(DateFilter::class, properties={"readAt"})
  * @ApiFilter(ExistsFilter::class, properties={"readAt", "optionsSelectedAt", "selectedOptionsReadAt"})
- * @ApiFilter(SearchFilter::class, properties={"uuid": "exact", "message.sender.uuid": "exact", "message.type": "exact", "selectedOptions": "partial"})
+ * @ApiFilter(SearchFilter::class, properties={"uuid": "exact", "recipient.uuid": "exact", "message.sender.uuid": "exact", "message.type": "exact", "selectedOptions": "partial"})
  * @ApiFilter(BooleanFilter::class, properties={"selfDelivery"})
  * @ApiFilter(OrderFilter::class, properties={"recipient.person.name", "readAt"}, arguments={"orderParameterName"="order"})
  * @ApiFilter(NotLikeFilter::class)
