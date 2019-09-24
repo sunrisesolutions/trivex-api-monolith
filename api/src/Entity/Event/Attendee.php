@@ -38,6 +38,25 @@ class Attendee
         $this->createdAt = new \DateTime();
     }
 
+    public function getName()
+    {
+        return $this->registration->getGivenName().' '.$this->registration->getFamilyName();
+    }
+
+    public function getGender()
+    {
+        return $this->registration->getGender();
+    }
+
+    public function getEmail()
+    {
+        return $this->registration->getEmail();
+    }
+
+    public function getPhoneNumber(){
+        return $this->registration->getPhoneNumber();
+    }
+
     /**
      * @ORM\PrePersist
      */
@@ -60,6 +79,7 @@ class Attendee
     private $uuid;
 
     /**
+     * @var Registration|null $registration
      * @ORM\OneToOne(targetEntity="App\Entity\Event\Registration", mappedBy="attendee", cascade={"persist", "remove"})
      * @Groups({"read", "write"})
      */

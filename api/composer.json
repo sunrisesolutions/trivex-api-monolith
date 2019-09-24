@@ -11,6 +11,7 @@
         "guzzlehttp/guzzle": "^6.3",
         "lexik/jwt-authentication-bundle": "^2.6",
         "minishlink/web-push": "^5.2",
+        "phpoffice/phpspreadsheet": "^1.9",
         "symfony/console": "4.3.*",
         "symfony/dotenv": "4.3.*",
         "symfony/flex": "^1.1",
