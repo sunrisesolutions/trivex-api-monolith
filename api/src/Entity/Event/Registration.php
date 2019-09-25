@@ -161,6 +161,7 @@ class Registration
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\IndividualMember", inversedBy="registrations")
      * @ORM\JoinColumn(name="id_individual_member", referencedColumnName="id", onDelete="CASCADE"),
+     * @Groups({"read"})
      */
     private $individualMember;
 
