@@ -300,7 +300,7 @@ class IndividualMember
 
     /**
      * @return array
-     * @Groups({"read_member"})
+     * @Groups({"read_member", "read"})
      */
     public function getPersonData()
     {
@@ -365,6 +365,7 @@ class IndividualMember
      * @var Person
      * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person", inversedBy="individualMembers", cascade={"persist","merge"})
      * @ORM\JoinColumn(name="id_person", referencedColumnName="id", onDelete="SET NULL")
+     * @Groups("read")
      */
     private $person;
 
