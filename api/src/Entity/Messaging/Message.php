@@ -221,6 +221,11 @@ class Message
         }
     }
 
+    public function getSenderName()
+    {
+        return $this->sender->getPerson()->getName();
+    }
+
     /**
      * @Groups("write_message")
      */

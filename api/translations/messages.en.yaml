@@ -14,3 +14,4 @@ xls:
     label_freeOnFridays: Free on Fridays
     label_freeOnSaturdays: Free on Saturdays
     label_freeOnSundays: Free on Sundays
+    label_senderName: Sender's Name

@@ -60,7 +60,7 @@ class MessageController extends AbstractController
         $sWriter->goFirstColumn();
         $sWriter->goFirstRow();
 
-        $cols = ['id', 'subject', 'body', 'freeOnMondays', 'freeOnTuesdays', 'freeOnWednesdays', 'freeOnThursdays', 'freeOnFridays', 'freeOnSaturdays', 'freeOnSundays'];
+        $cols = ['id', 'senderName', 'subject', 'body', 'freeOnMondays', 'freeOnTuesdays', 'freeOnWednesdays', 'freeOnThursdays', 'freeOnFridays', 'freeOnSaturdays', 'freeOnSundays'];
         $columnLetterCode = 65; // Letter A
 
         $heading = true;
