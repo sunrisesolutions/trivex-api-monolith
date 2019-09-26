@@ -402,6 +402,15 @@ class Organisation
         $this->roles = new ArrayCollection();
     }
 
+    public function getFreeonMessages()
+    {
+        $c = Criteria::create();
+        $expr = Criteria::expr();
+        $c->andWhere($expr->eq('type', Message::TYPE_FREE_ON));
+
+        return $this->messages->matching($c);
+    }
+
     public function getId(): ?int
     {
         return $this->id;

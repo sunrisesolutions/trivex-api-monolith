@@ -5,3 +5,12 @@ xls:
     label_gender: Gender
     label_email: Email
     label_phoneNumber: Phone
+    label_subject: Subject
+    label_body: Body
+    label_freeOnMondays: Free on Mondays
+    label_freeOnTuesdays: Free on Tuesdays
+    label_freeOnWednesdays: Free on Wednesdays
+    label_freeOnThursdays: Free on Thursdays
+    label_freeOnFridays: Free on Fridays
+    label_freeOnSaturdays: Free on Saturdays
+    label_freeOnSundays: Free on Sundays
