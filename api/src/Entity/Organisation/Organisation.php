@@ -9,6 +9,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Entity\Event\Event;
 use App\Entity\Messaging\Message;
+use App\Entity\Person\Person;
 use App\Util\AppUtil;
 use App\Util\AwsS3Util;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -51,6 +52,14 @@ class Organisation
         $expr = Criteria::expr();
         $c->andWhere($expr->eq('messageAdminGranted', true));
         return $this->individualMembers->matching($c);
+    }
+
+    public function getIndividualMemberByPerson(Person $person)
+    {
+        $c = Criteria::create();
+        $expr = Criteria::expr();
+        $c->andWhere($expr->eq('person', $person));
+        return $this->individualMembers->matching($c)->first();
     }
 
     public function getRole($name)

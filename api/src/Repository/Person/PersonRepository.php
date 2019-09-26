@@ -20,9 +20,9 @@ class PersonRepository extends ServiceEntityRepository
     }
 
      /**
-      * @return Person[] Returns an array of Person objects
+      * @return Person|null Returns a Person object
       */
-    public function findByNricNumber($nric, $country ='Singapore')
+    public function findOneByNricNumber($nric, $country ='Singapore'): ?Person
     {
         return $this->createQueryBuilder('p')
             ->join('p.nationalities', 'nationality')
@@ -33,7 +33,8 @@ class PersonRepository extends ServiceEntityRepository
             ->orderBy('p.id', 'ASC')
             ->setMaxResults(100)
             ->getQuery()
-            ->getResult()
+            ->getOneOrNullResult()
+//            ->getResult()
         ;
     }
 
