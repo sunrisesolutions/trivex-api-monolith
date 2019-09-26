@@ -310,7 +310,11 @@ class IndividualMember
         }
         return [
             'uuid' => $person->getUuid(),
-            'name' => $person->getGivenName(),
+            'givenName' => $person->getGivenName(),
+            'familyName' => $person->getFamilyName(),
+            'gender' => $person->getGender(),
+
+            'name' => $person->getGivenName().' '.$person->getFamilyName(),
             'jobTitle' => $person->getJobTitle(),
             'employerName' => $person->getEmployerName(),
             'dob' => $person->getBirthDate(),
@@ -940,6 +944,7 @@ class IndividualMember
     {
         $this->groupName = $groupName;
     }
+
     public function getMessageAdminGranted(): ?bool
     {
         return $this->messageAdminGranted;

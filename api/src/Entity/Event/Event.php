@@ -35,6 +35,14 @@ class Event
     private $id;
 
     /**
+     * @Groups({"read"})
+     * @return int|null
+     */
+    public function getIntegerId(){
+        return $this->id;
+    }
+
+    /**
      * @ORM\PrePersist
      */
     public function initiateUuid()
