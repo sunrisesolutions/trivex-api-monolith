@@ -6,6 +6,7 @@ use App\Entity\Organisation\IndividualMember;
 use App\Entity\Organisation\Organisation;
 use App\Entity\Person\Nationality;
 use App\Entity\Person\Person;
+use App\Entity\User\User;
 use App\Repository\Person\PersonRepository;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Component\Console\Command\Command;
@@ -84,11 +85,27 @@ class ImportMembersCommand extends Command
             if ($line === 1) {
                 continue;
             }
-            $person = $personRepo->findOneByNricNumber(strtoupper($row['C']));
+            $nric = strtoupper(trim($row['C']));
+            if (empty($nric)) {
+                continue;
+            }
+            $person = $personRepo->findOneByNricNumber($nric);
             if (empty($person)) {
                 $person = new Person();
+                $email = $nric.'.nric.auto-gen@whatwechat.net';
+                $person->setEmail($email);
+                $person->setPhoneNumber($nric);
+                $user = new User();
+                $user->setPlainPassword($nric);
+                $user->setEmail($email);
+                $user->setIdNumber($nric);
+                $user->setPhone($nric);
+                $person->setUser($user);
+                $user->setPerson($person);
+
             }
             foreach ($row as $col => $cell) {
+                $user = $person->getUser();
                 switch ($col) {
                     case 'A':
                         $person->setGivenName($cell);
@@ -110,6 +127,7 @@ class ImportMembersCommand extends Command
                             $io->note(trim($cell));
                             $dob = \DateTime::createFromFormat('d-m-Y', trim($cell));
                             $person->setBirthDate($dob);
+                            $user->setBirthDate($dob);
                         }
                         break;
                     case 'E':
