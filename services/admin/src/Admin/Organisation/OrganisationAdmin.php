@@ -156,14 +156,17 @@ class OrganisationAdmin extends BaseAdmin
 
         $formMapper
             ->with('General')
-            ->add('logoName', null, ['label' => 'form.label_logo'])
+            ->add('logoName', null, [
+                'required' => false,
+                'label' => false])
             ->add('foundedOn', DatePickerType::class, [
+                'required' => false,
                 'format' => 'dd-MM-yyyy',
                 'placeholder' => 'dd-mm-yyyy',
                 'datepicker_use_button' => false,
             ])
-            ->add('type')
-            ->add('address')
+//            ->add('type')
+            ->add('address', null, ['required' => false])
             ->add('name')
             ->add('registrationNumber')
 //            ->add('logoName')

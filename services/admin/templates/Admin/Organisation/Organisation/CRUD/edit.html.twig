@@ -1,4 +1,44 @@
 {% extends 'CRUD/edit.html.twig' %}
+{% block form %}
+{#    {{ dump() }}#}
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h4 class="box-title">
+                    Company Logo
+                </h4>
+            </div>
+            <div class="box-body">
+                <div class="sonata-ba-collapsed-fields">
+
+                    <div class="form-group" id="sonata-ba-field-container-sc6f18642cd_logoName">
+                        <label class="  control-label" for="sc6f18642cd_logoName">
+
+                        </label>
+                        <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                            <img src="{{ admin.subject.logoReadUrl }}" alt="" height="200" />
+                            {#     {{ dump(admin.subject.logoWriteForm) }}#}
+                            {% set logoWriteForm = admin.subject.logoWriteForm %}
+
+                            <form action="{{ logoWriteForm.attributes.action }}"
+                                  class="dropzone"
+                                  id="my-awesome-dropzone123">
+                                <input type="hidden" name="acl" value="{{ logoWriteForm.inputs.acl }}" />
+                                <input type="hidden" name="key" value="{{ logoWriteForm.filePath }}" />
+                                <input type="hidden" name="X-Amz-Credential" value="{{ logoWriteForm.inputs['X-Amz-Credential'] }}" />
+                                <input type="hidden" name="X-Amz-Algorithm" value="{{ logoWriteForm.inputs['X-Amz-Algorithm'] }}" />
+                                <input type="hidden" name="X-Amz-Date" value="{{ logoWriteForm.inputs['X-Amz-Date'] }}" />
+                                <input type="hidden" name="X-Amz-Signature" value="{{ logoWriteForm.inputs['X-Amz-Signature'] }}" />
+                                <input type="hidden" name="Policy" value="{{ logoWriteForm.inputs.Policy }}" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ parent() }}
+{% endblock %}
 
 {#{% block form_row %}#}
 {#    ............#}
