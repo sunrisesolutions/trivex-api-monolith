@@ -38,6 +38,11 @@ class Attendee
         $this->createdAt = new \DateTime();
     }
 
+    public function getMemberYNLbl()
+    {
+        return empty($this->registration->getIndividualMember()) ? 'No' : 'Yes';
+    }
+
     public function getName()
     {
         return $this->registration->getGivenName().' '.$this->registration->getFamilyName();
@@ -53,7 +58,8 @@ class Attendee
         return $this->registration->getEmail();
     }
 
-    public function getPhoneNumber(){
+    public function getPhoneNumber()
+    {
         return $this->registration->getPhoneNumber();
     }
 

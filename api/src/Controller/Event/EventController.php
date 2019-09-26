@@ -49,7 +49,7 @@ class EventController extends AbstractController
         $sWriter->goFirstColumn();
         $sWriter->goFirstRow();
 
-        $cols = ['id', 'name', 'gender','email','phoneNumber'];
+        $cols = ['id', 'name', 'gender', 'email', 'phoneNumber','memberYNLbl'];
         $columnLetterCode = 65; // Letter A
 
         $heading = true;
