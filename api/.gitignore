@@ -1,5 +1,8 @@
 public/deploy.php
 
+!/data/import/member/.gitkeep
+/data/import/member/*
+
 .idea
 
 /helm/api/charts
