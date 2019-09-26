@@ -1,0 +1,7 @@
+xls:
+    label_memberYNLbl: Is Member?
+    label_id: System ID
+    label_name: Name
+    label_gender: Gender
+    label_email: Email
+    label_phoneNumber: Phone

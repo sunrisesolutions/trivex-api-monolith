@@ -11,15 +11,23 @@ use App\Util\StringUtil;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EventController extends AbstractController
 {
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @Route("/events/{id}/download-attendee-xlsx", name="download_attendee_xlsx")
      */
@@ -49,7 +57,7 @@ class EventController extends AbstractController
         $sWriter->goFirstColumn();
         $sWriter->goFirstRow();
 
-        $cols = ['id', 'name', 'gender', 'email', 'phoneNumber','memberYNLbl'];
+        $cols = ['id', 'name', 'gender', 'email', 'phoneNumber', 'memberYNLbl'];
         $columnLetterCode = 65; // Letter A
 
         $heading = true;
@@ -63,6 +71,8 @@ class EventController extends AbstractController
                 $heading = false;
                 foreach ($cols as $index => $colName) {
                     $columnLetter = chr($columnLetterCode);
+                    $colName = 'xls.label_'.$colName;
+                    $colName = $this->translator->trans($colName);
                     $activeSheet
                         ->setCellValue($columnLetter.'1', $colName);
                     $columnLetterCode++;
