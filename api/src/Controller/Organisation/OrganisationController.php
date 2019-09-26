@@ -27,6 +27,20 @@ class OrganisationController extends AbstractController
     }
 
     /**
+     * @Route("/organisation/org-code-by-subdomain/{subdomain}", name="org_code_by_subdomain")
+     */
+    public function getOrgCodeBySubdomain(Request $request, $subdomain)
+    {
+        $repo = $this->getDoctrine()->getRepository(Organisation::class);
+        /** @var Organisation $org */
+        $org = $repo->findOneBySubdomain($subdomain);
+        if (empty($org)) {
+            throw new NotFoundHttpException('Not Found');
+        }
+        return new JsonResponse(['organisationCode' => $org->getCode()]);
+    }
+
+    /**
      * @Route("/organisation/member-id-by-uuid/{uuid}", name="member_id_by_uuid")
      */
     public function getMemberIdByUuid(Request $request, $uuid)
