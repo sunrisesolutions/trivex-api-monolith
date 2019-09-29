@@ -29,7 +29,7 @@ class UserRepository extends ServiceEntityRepository
         return $qb
             ->andWhere(
                 $expr->andX(
-                    $expr->eq('u.birthDate', ($birthday)),
+                    $expr->eq('u.birthDate', $expr->literal($birthday)),
                     $expr->like('u.phone', $expr->literal('%'.$phone))
                 )
             )
