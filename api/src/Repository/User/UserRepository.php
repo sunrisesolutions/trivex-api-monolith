@@ -22,19 +22,23 @@ class UserRepository extends ServiceEntityRepository
     // /**
     //  * @return User[] Returns an array of User objects
     //  */
-    /*
-    public function findByExampleField($value)
+    public function findByNumericPhoneAndBirthday($phone, \DateTime $birthday)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
+        $qb = $this->createQueryBuilder('u');
+        $expr = $qb->expr();
+        return $qb
+            ->andWhere(
+                $expr->andX(
+                    $expr->eq('u.birthDate', ($birthday)),
+                    $expr->like('u.phone', $expr->literal('%'.$phone))
+                )
+            )
             ->orderBy('u.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?User

@@ -5,6 +5,7 @@ namespace App\Security;
 use App\Entity\Organisation\IndividualMember;
 use App\Entity\Organisation\Organisation;
 use App\Entity\User\User;
+use App\Repository\User\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationSuccessResponse;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -70,10 +71,13 @@ class BirthdayPhoneAuthenticator extends AbstractGuardAuthenticator
         if (!empty($orgCode)) {
             $org = $this->entityManager->getRepository(Organisation::class)->findOneBy(['code' => $orgCode]);
             $request->attributes->set('orgUid', $org->getUuid());
-            $users = $this->entityManager->getRepository(User::class)->findBy([
-                'phone' => $credentials['phone'],
-                'birthDate' => $credentials['birth-date'],
-            ]);
+
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->entityManager->getRepository(User::class);
+            $users = $userRepo->findByNumericPhoneAndBirthday(
+                $credentials['phone'],
+                $credentials['birth-date']
+            );
 
             $user = null;
             /** @var User $u */
@@ -131,7 +135,7 @@ class BirthdayPhoneAuthenticator extends AbstractGuardAuthenticator
 
         $data = $event->getData();
         $imUuid = $request->attributes->get('imUuid');
-        $imId =  $request->attributes->get('imId');
+        $imId = $request->attributes->get('imId');
 
 //        $memberArr = json_decode(file_get_contents('https://org.api.trivesg.com/organisation/member-id-by-uuid/'.$request->attributes->get('imUuid')));
 //        $data['im_id'] = -1;
