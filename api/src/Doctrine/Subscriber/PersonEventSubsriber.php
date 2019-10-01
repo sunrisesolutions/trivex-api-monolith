@@ -8,45 +8,61 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class PersonEventSubsriber implements ORMEventSubscriber {
+class PersonEventSubsriber implements ORMEventSubscriber
+{
 
-    public function __construct() {
+    public function __construct()
+    {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getSubscribedEvents(){
+    public function getSubscribedEvents()
+    {
         return [
             'prePersist',
+            'preUpdate',
             'postPersist',
             'postUpdate',
             'postRemove'
         ];
     }
 
-    public function prePersist(LifecycleEventArgs $args) {
+    public function preUpdate(LifecycleEventArgs $args)
+    {
         $object = $args->getObject();
         if (!$object instanceof Person) {
             return;
         }
     }
 
-    public function postPersist(LifecycleEventArgs $args) {
+    public function prePersist(LifecycleEventArgs $args)
+    {
         $object = $args->getObject();
         if (!$object instanceof Person) {
             return;
         }
     }
 
-    public function postUpdate(LifecycleEventArgs $args) {
+    public function postPersist(LifecycleEventArgs $args)
+    {
         $object = $args->getObject();
         if (!$object instanceof Person) {
             return;
         }
     }
 
-    public function postRemove(LifecycleEventArgs $args) {
+    public function postUpdate(LifecycleEventArgs $args)
+    {
+        $object = $args->getObject();
+        if (!$object instanceof Person) {
+            return;
+        }
+    }
+
+    public function postRemove(LifecycleEventArgs $args)
+    {
         $object = $args->getObject();
         if (!$object instanceof Person) {
             return;
