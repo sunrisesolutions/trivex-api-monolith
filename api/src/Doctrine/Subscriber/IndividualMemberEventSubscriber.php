@@ -51,7 +51,7 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
             if (!empty($personWithEmail)) {
                 $person->removeIndividualMember($member);
                 $personWithEmail->addIndividualMember($member);
-                $object->setPerson($personWithEmail);
+                $member->setPerson($personWithEmail);
                 $manager->persist($person);
                 $personWithEmail->preSave();
                 $manager->persist($personWithEmail);
