@@ -22,10 +22,11 @@ use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Controller\Organisation\SendEmailToIndividualMember;
-
+//*     attributes={"access_control"="is_granted('ROLE_USER')"},
+//*     "put"={"access_control"="is_granted('ROLE_USER')"},
 /**
  * @ApiResource(
- *     attributes={"access_control"="is_granted('ROLE_USER')"},
+
  *     collectionOperations={
  *         "get",
  *         "post"={"access_control"="is_granted('ROLE_ORG_ADMIN')"},
@@ -33,7 +34,7 @@ use App\Controller\Organisation\SendEmailToIndividualMember;
  *     itemOperations={
  *     "get",
  *     "delete"={"access_control"="is_granted('ROLE_ORG_ADMIN')"},
- *     "put"={"access_control"="is_granted('ROLE_USER')"},
+ *     "put",
  *     "put_email"={
  *         "method"="PUT",
  *         "path"="/individual_members/{id}/email",

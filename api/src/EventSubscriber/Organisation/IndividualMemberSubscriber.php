@@ -36,9 +36,10 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
     private $mailer;
     private $security;
     private $manager;
+
 //    private $awsSnsUtil;
 
-    public function __construct(RegistryInterface $registry, \Swift_Mailer $mailer, Security $security,EntityManagerInterface $manager)
+    public function __construct(RegistryInterface $registry, \Swift_Mailer $mailer, Security $security, EntityManagerInterface $manager)
     {
         $this->registry = $registry;
         $this->mailer = $mailer;
@@ -68,7 +69,7 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
                 $manager->persist($role);
             }
             $member->addRole($role);
-        } else {
+        } elseif ($member->admin === false) {
             $roles = $member->getRoles()->matching($c);
             if ($roles->count() > 0) {
                 foreach ($roles as $role) {
@@ -81,7 +82,7 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
     private function makeMessageAdmin(IndividualMember $member, ObjectManager $manager)
     {
         $c = Criteria::create()->andWhere(Criteria::expr()->eq('name', 'ROLE_MSG_ADMIN'));
-        if ($member->admin === true) {
+        if ($member->messageAdmin === true) {
             $role = $member->getRoles()->matching($c)->first();
             if (empty($role)) {
                 $role = new Role();
@@ -92,7 +93,7 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
                 $manager->persist($role);
             }
             $member->addRole($role);
-        } else {
+        } elseif ($member->messageAdmin === false) {
             $roles = $member->getRoles()->matching($c);
             if ($roles->count() > 0) {
                 foreach ($roles as $role) {
@@ -116,7 +117,7 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
                 $manager->persist($role);
             }
             $member->addRole($role);
-        } else {
+        } elseif ($member->messageDeliverable === false) {
             $roles = $member->getRoles()->matching($c);
             if ($roles->count() > 0) {
                 foreach ($roles as $role) {
@@ -139,41 +140,72 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
         /** @var JWTUser $user */
         $user = $this->security->getUser();
         if (empty($user) or (empty($imUuid = $user->getImUuid()) and !in_array('ROLE_ADMIN', $user->getRoles()))) {
-            $event->setResponse(new JsonResponse(['Unauthorised access! Empty user or Member'], 401));
+//            $event->setResponse(new JsonResponse(['Unauthorised access! Empty user or Member'], 401));
         }
 
-        $orgUuid = $member->getOrganisationUuid();
-        $personUuid = $member->getPersonUuid();
+//        $orgUuid = $member->getOrganisationUuid();
+//        $personUuid = $member->getPersonUuid();
 
-        if (empty($orgUuid) or empty($personUuid)) {
-            return;
+//        if (empty($orgUuid) or empty($personUuid)) {
+//            return;
+//        }
+
+//        if (!empty($orgUuid)) {
+//            $org = $this->registry->getRepository(Organisation::class)->findOneBy(['uuid' => $orgUuid]);
+//        }
+
+//        if (empty($org)) {
+//            throw new InvalidArgumentException('Invalid Organisation');
+//        }
+
+//        if (empty($person)) {
+//            throw new InvalidArgumentException('Invalid Person');
+//        }
+
+//        if ($method === Request::METHOD_POST && !empty($person->getId())) {
+//            $im = $this->registry->getRepository(IndividualMember::class)->findOneBy(['organisation' => $org->getId(), 'person' => $person->getId()]);
+//            if (!empty($im)) $event->setResponse(new JsonResponse(['Member already exist'], 400));
+//        }
+
+        if (!empty($email = $member->getEmail())) {
+            $person = $member->getPerson();
+            $personRepo = $this->registry->getRepository(Person::class);
+            $manager = $this->manager;
+            $personWithEmail = $personRepo->findOneBy(['email' => $email,
+            ]);
+            if (!empty($personWithEmail)) {
+                $person->removeIndividualMember($member);
+                $personWithEmail->addIndividualMember($member);
+                $member->setPerson($personWithEmail);
+                $manager->persist($person);
+                $personWithEmail->preSave();
+                $manager->persist($personWithEmail);
+
+                if (!empty($userWithPersonEmail = $personWithEmail->getUser())) {
+                    $userWithPersonEmail->setUpdatedAt(new \DateTime());
+                    if (!empty($password)) {
+                        $userWithPersonEmail->setPlainPassword($password);
+                    }
+                    $manager->persist($userWithPersonEmail);
+                }
+
+                $personWithEmailExisting = true;
+            } else {
+                $person->setEmail($email);
+                $person->getUser()->setEmail($email);
+                $manager->persist($person);
+                $manager->persist($person->getUser());
+            }
+//            $manager->flush();
         }
-
-        if (!empty($orgUuid)) {
-            $org = $this->registry->getRepository(Organisation::class)->findOneBy(['uuid' => $orgUuid]);
-        }
-
-        if (empty($org)) {
-            throw new InvalidArgumentException('Invalid Organisation');
-        }
-
-        if (empty($person)) {
-            throw new InvalidArgumentException('Invalid Person');
-        }
-
-        if ($method === Request::METHOD_POST && !empty($person->getId())) {
-            $im = $this->registry->getRepository(IndividualMember::class)->findOneBy(['organisation' => $org->getId(), 'person' => $person->getId()]);
-            if (!empty($im)) $event->setResponse(new JsonResponse(['Member already exist'], 400));
-        }
-
 //        $person->setEmployerName($org->getName());
 //        $person->addIndividualMember($member);
 //        $member->setPerson($person);
 //        $org->addIndividualMember($member);
 //        $member->setOrganisation($org);
-        $this->makeAdmin($member, $this->manager);
-        $this->makeMessageAdmin($member, $this->manager);
-        $this->makeMessageUser($member, $this->manager);
+//        $this->makeAdmin($member, $this->manager);
+//        $this->makeMessageAdmin($member, $this->manager);
+//        $this->makeMessageUser($member, $this->manager);
 
 //        if ($member->admin != $member->hasRole('ROLE_ORG_ADMIN')) $this->memberRole($member, 'ROLE_ORG_ADMIN');
 //        if ($member->messageAdmin != $member->hasRole('ROLE_MSG_ADMIN')) $this->memberRole($member, 'ROLE_MSG_ADMIN');
@@ -183,7 +215,8 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
 
     }
 
-    private function memberRole(IndividualMember $member, string $roleName) {
+    private function memberRole(IndividualMember $member, string $roleName)
+    {
         if ($member->hasRole($roleName)) {
             $c = Criteria::create()->where(Criteria::expr()->eq('name', $roleName));
             $role = $member->getRoles()->matching($c)->first();

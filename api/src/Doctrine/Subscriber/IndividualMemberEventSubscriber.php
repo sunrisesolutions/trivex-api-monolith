@@ -47,37 +47,6 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
 
     private function postUpdateData(IndividualMember $member)
     {
-        if (!empty($email = $member->getEmail())) {
-            $person = $member->getPerson();
-            $personRepo = $this->registry->getRepository(Person::class);
-            $manager = $this->manager;
-            $personWithEmail = $personRepo->findOneBy(['email' => $email,
-            ]);
-            if (!empty($personWithEmail)) {
-                $person->removeIndividualMember($member);
-                $personWithEmail->addIndividualMember($member);
-                $member->setPerson($personWithEmail);
-                $manager->persist($person);
-                $personWithEmail->preSave();
-                $manager->persist($personWithEmail);
-
-                if (!empty($userWithPersonEmail = $personWithEmail->getUser())) {
-                    $userWithPersonEmail->setUpdatedAt(new \DateTime());
-                    if (!empty($password)) {
-                        $userWithPersonEmail->setPlainPassword($password);
-                    }
-                    $manager->persist($userWithPersonEmail);
-                }
-
-                $personWithEmailExisting = true;
-            } else {
-                $person->setEmail($email);
-                $person->getUser()->setEmail($email);
-                $manager->persist($person);
-                $manager->persist($person->getUser());
-            }
-            $manager->flush();
-        }
     }
 
     public function prePersist(LifecycleEventArgs $args)
