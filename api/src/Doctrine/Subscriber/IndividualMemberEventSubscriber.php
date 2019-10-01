@@ -65,6 +65,10 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
                 }
 
                 $personWithEmailExisting = true;
+            } else {
+                $person->setEmail($email);
+                $person->getUser()->setEmail($email);
+                $manager->persist($person);
             }
         }
     }
