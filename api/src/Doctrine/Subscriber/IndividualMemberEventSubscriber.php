@@ -40,7 +40,12 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
         ];
     }
 
-    private function updateData(IndividualMember $member)
+    private function preUpdateData(IndividualMember $member)
+    {
+
+    }
+
+    private function postUpdateData(IndividualMember $member)
     {
         if (!empty($email = $member->getEmail())) {
             $person = $member->getPerson();
@@ -71,7 +76,7 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
                 $manager->persist($person);
                 $manager->persist($person->getUser());
             }
-        $manager->flush();
+            $manager->flush();
         }
     }
 
@@ -106,6 +111,7 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
             ],
             'version' => AppUtil::MESSAGE_VERSION,
         ];
+        $this->postUpdateData();
     }
 
     public function postUpdate(LifecycleEventArgs $args)
@@ -125,6 +131,8 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
             ],
             'version' => AppUtil::MESSAGE_VERSION,
         ];
+
+        $this->postUpdateData();
     }
 
     public function postRemove(LifecycleEventArgs $args)
