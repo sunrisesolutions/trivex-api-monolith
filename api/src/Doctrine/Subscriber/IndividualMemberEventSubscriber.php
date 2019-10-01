@@ -111,7 +111,7 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
             ],
             'version' => AppUtil::MESSAGE_VERSION,
         ];
-        $this->postUpdateData();
+        $this->postUpdateData($object);
     }
 
     public function postUpdate(LifecycleEventArgs $args)
@@ -132,7 +132,7 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
             'version' => AppUtil::MESSAGE_VERSION,
         ];
 
-        $this->postUpdateData();
+        $this->postUpdateData($object);
     }
 
     public function postRemove(LifecycleEventArgs $args)
