@@ -157,31 +157,6 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
             throw new InvalidArgumentException('Invalid Organisation');
         }
 
-        if (!empty($personUuid)) {
-            $person = $this->registry->getRepository(Person::class)->findOneBy(['uuid' => $personUuid]);
-            if (empty($person)) {
-                $person = new Person();
-                $person->setUuid($personUuid);
-
-                $token = $event->getRequest()->headers->get('Authorization');
-
-                try {
-//                    $res = $client->request('GET', $url, ['headers' => ['Authorization' => $token]]);
-//                    if ($res->getStatusCode() === 200) {
-//                        $data = json_decode($res->getBody()->getContents(), true);
-//                        if (isset($data['hydra:totalItems']) && $data['hydra:totalItems'] > 0) {
-//                            $person->setGivenName($data['hydra:member'][0]['givenName'] ?? null);
-//                            $person->setJobTitle($data['hydra:member'][0]['jobTitle'] ?? null);
-//                            $person->setBirthDate($data['hydra:member'][0]['birthDate'] ? new \DateTime($data['hydra:member'][0]['birthDate']) : null);
-//                            $person->setEmail($data['hydra:member'][0]['email'] ?? null);
-//                            $person->setPhoneNumber($data['hydra:member'][0]['phoneNumber'] ?? null);
-//                        }
-//                    }
-                } catch (\Exception $exception) {}
-                $this->manager->persist($person);
-            }
-        }
-
         if (empty($person)) {
             throw new InvalidArgumentException('Invalid Person');
         }
@@ -191,11 +166,11 @@ class IndividualMemberSubscriber implements EventSubscriberInterface
             if (!empty($im)) $event->setResponse(new JsonResponse(['Member already exist'], 400));
         }
 
-        $person->setEmployerName($org->getName());
-        $person->addIndividualMember($member);
-        $member->setPerson($person);
-        $org->addIndividualMember($member);
-        $member->setOrganisation($org);
+//        $person->setEmployerName($org->getName());
+//        $person->addIndividualMember($member);
+//        $member->setPerson($person);
+//        $org->addIndividualMember($member);
+//        $member->setOrganisation($org);
         $this->makeAdmin($member, $this->manager);
         $this->makeMessageAdmin($member, $this->manager);
         $this->makeMessageUser($member, $this->manager);
