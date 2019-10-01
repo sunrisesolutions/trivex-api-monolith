@@ -69,7 +69,9 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
                 $person->setEmail($email);
                 $person->getUser()->setEmail($email);
                 $manager->persist($person);
+                $manager->persist($person->getUser());
             }
+        $manager->flush();
         }
     }
 
