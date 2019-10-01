@@ -108,7 +108,7 @@ class MessageController extends AbstractController
 
         $filename = sprintf(
             'export_%s_%s.%s',
-            strtolower('attendee_'.StringUtil::slugify($org->getName())),
+            strtolower('free_on_messages_'.StringUtil::slugify($org->getName())),
             date('Y_m_d_H_i_s', strtotime('now')),
             'xlsx'
         );
