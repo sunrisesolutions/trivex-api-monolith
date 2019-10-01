@@ -5,19 +5,27 @@ namespace App\Doctrine\Subscriber;
 use App\Doctrine\Module\ORMEventSubscriber;
 use App\Entity\Event;
 use App\Entity\Organisation\IndividualMember;
-use App\Entity\Person;
+use App\Entity\Person\Person;
 use App\Util\AppUtil;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Events;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class IndividualMemberEventSubscriber implements ORMEventSubscriber
 {
 
-    function __construct()
+    private $registry;
+    private $manager;
+
+    function __construct(RegistryInterface $registry, EntityManagerInterface $manager)
     {
+        $this->registry = $registry;
+        $this->manager = $manager;
     }
 
     public function getSubscribedEvents()
@@ -32,23 +40,47 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
         ];
     }
 
-    private function setPerson(IndividualMember $member){
+    private function updateData(IndividualMember $member)
+    {
+        if (!empty($email = $member->getEmail())) {
+            $person = $member->getPerson();
+            $personRepo = $this->registry->getRepository(Person::class);
+            $manager = $this->manager;
+            $personWithEmail = $personRepo->findOneBy(['email' => $email,
+            ]);
+            if (!empty($personWithEmail)) {
+                $person->removeIndividualMember($member);
+                $personWithEmail->addIndividualMember($member);
+                $object->setPerson($personWithEmail);
+                $manager->persist($person);
+                $personWithEmail->preSave();
+                $manager->persist($personWithEmail);
 
+                if (!empty($userWithPersonEmail = $personWithEmail->getUser())) {
+                    $userWithPersonEmail->setUpdatedAt(new \DateTime());
+                    if (!empty($password)) {
+                        $userWithPersonEmail->setPlainPassword($password);
+                    }
+                    $manager->persist($userWithPersonEmail);
+                }
 
+                $personWithEmailExisting = true;
+            }
+        }
     }
 
     public function prePersist(LifecycleEventArgs $args)
     {
         $object = $args->getObject();
         if (!$object instanceof IndividualMember) return;
-
+        $this->updateData($object);
     }
 
     public function preUpdate(LifecycleEventArgs $args)
     {
         $object = $args->getObject();
         if (!$object instanceof IndividualMember) return;
-
+        $this->updateData($object);
     }
 
     public function postPersist(LifecycleEventArgs $args)
