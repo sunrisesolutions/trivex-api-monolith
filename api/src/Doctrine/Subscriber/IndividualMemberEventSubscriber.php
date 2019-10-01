@@ -84,14 +84,14 @@ class IndividualMemberEventSubscriber implements ORMEventSubscriber
     {
         $object = $args->getObject();
         if (!$object instanceof IndividualMember) return;
-        $this->updateData($object);
+        $this->preUpdateData($object);
     }
 
     public function preUpdate(LifecycleEventArgs $args)
     {
         $object = $args->getObject();
         if (!$object instanceof IndividualMember) return;
-        $this->updateData($object);
+        $this->preUpdateData($object);
     }
 
     public function postPersist(LifecycleEventArgs $args)
