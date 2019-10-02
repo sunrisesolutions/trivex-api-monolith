@@ -33,7 +33,7 @@ class MessageController extends AbstractController
 
 
     /**
-     * @Route("/messages/{messageId}/delivery-stats", name="download_org_free_on_message_xlsx")
+     * @Route("/messages/{messageId}/delivery-stats", name="delivery_stats")
      */
     public function deliveryStats(Request $request, $messageId)
     {
@@ -48,6 +48,7 @@ class MessageController extends AbstractController
         $qb = $registry->getRepository(Delivery::class)->createQueryBuilder('delivery');
         $expr = $qb->expr();
         $qb->andWhere($expr->like('delivery.selectedOptions', $expr->literal('%'.$selectedOption.'%')));
+        $qb->andWhere($expr->eq('delivery.message', $message->getId()));
 
         $totalItems = count($qb->getQuery()->getResult());
 
