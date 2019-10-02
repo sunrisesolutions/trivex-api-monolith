@@ -31,6 +31,20 @@ class MessageController extends AbstractController
         $this->translator = $translator;
     }
 
+    /**
+     * @Route("/messages/{messageId}/my-selected-options", name="selected_options")
+     */
+    public function mySelectedOptions(Request $request, $messageId)
+    {
+        $registry = $this->getDoctrine();
+        $message = $registry->getRepository(Message::class)->find($messageId);
+        if (empty($message)) {
+            throw new NotFoundHttpException();
+        }
+        $r = [];
+
+        return new JsonResponse($r);
+    }
 
     /**
      * @Route("/messages/{messageId}/delivery-stats", name="delivery_stats")
