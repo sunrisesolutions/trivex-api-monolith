@@ -61,6 +61,6 @@ final class CurrentOrganisationExtension implements QueryCollectionExtensionInte
 
     private function supportClass($class)
     {
-        return in_array($class, [Organisation::class, IndividualMember::class, OptionSet::class]);
+        return in_array($class, [Organisation::class, IndividualMember::class]);
     }
 }

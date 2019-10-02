@@ -6,6 +6,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInter
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use App\Entity\Messaging\Delivery;
+use App\Entity\Messaging\OptionSet;
 use App\Entity\Organisation\IndividualMember;
 use App\Entity\Messaging\Message;
 use App\Entity\Organisation\Organisation;
@@ -68,6 +69,6 @@ final class CurrentOrganisationExtension implements QueryCollectionExtensionInte
 
     private function supportClass($class)
     {
-        return in_array($class, [Delivery::class, Message::class]);
+        return in_array($class, [Delivery::class, Message::class, OptionSet::class]);
     }
 }
