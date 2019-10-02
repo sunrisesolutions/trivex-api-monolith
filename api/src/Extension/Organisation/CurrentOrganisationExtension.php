@@ -5,6 +5,7 @@ namespace App\Extension\Organisation;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use App\Entity\Messaging\OptionSet;
 use App\Entity\Organisation\IndividualMember;
 use App\Entity\Organisation\Organisation;
 use App\Security\JWTUser;
@@ -60,6 +61,6 @@ final class CurrentOrganisationExtension implements QueryCollectionExtensionInte
 
     private function supportClass($class)
     {
-        return in_array($class, [Organisation::class, IndividualMember::class]);
+        return in_array($class, [Organisation::class, IndividualMember::class, OptionSet::class]);
     }
 }
