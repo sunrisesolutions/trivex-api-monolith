@@ -46,7 +46,7 @@ final class CurrentOrganisationExtension implements QueryCollectionExtensionInte
         /** @var JWTUser $user */
         $user = $this->security->getUser();
 
-        if ($supported && empty($user) || null === $objectUuid = $user->getOrgUuid()) {
+        if (empty($user) || null === $objectUuid = $user->getOrgUuid()) {
             throw new UnauthorizedHttpException('Please login');
         }
 
@@ -57,7 +57,7 @@ final class CurrentOrganisationExtension implements QueryCollectionExtensionInte
             $queryBuilder->join('message.organisation', 'organisation');
             $queryBuilder->andWhere($expr->like('organisation.uuid', $expr->literal($objectUuid)));
 //            $queryBuilder->setParameter('current_object', $objectUuid);
-        } elseif ($resourceClass === Message::class) {
+        } else {
             $rootAlias = $queryBuilder->getRootAliases()[0];
             $expr = $queryBuilder->expr();
             $queryBuilder->join($rootAlias.'.organisation', 'organisation');
