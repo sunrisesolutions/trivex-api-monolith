@@ -22,11 +22,12 @@ use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Controller\Organisation\SendEmailToIndividualMember;
+
 //*     attributes={"access_control"="is_granted('ROLE_USER')"},
 //*     "put"={"access_control"="is_granted('ROLE_USER')"},
+
 /**
  * @ApiResource(
-
  *     collectionOperations={
  *         "get",
  *         "post"={"access_control"="is_granted('ROLE_ORG_ADMIN')"},
@@ -301,7 +302,7 @@ class IndividualMember
 
     /**
      * @return array
-     * @Groups({"read_member", "read"})
+     * @Groups({"read_member", "read", "read_message"})
      */
     public function getPersonData()
     {
@@ -329,6 +330,11 @@ class IndividualMember
      * @ORM\OneToMany(targetEntity="App\Entity\Messaging\NotifSubscription", mappedBy="individualMember")
      */
     private $notifSubscriptions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Messaging\Message", mappedBy="sender")
+     */
+    private $messages;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Messaging\Delivery", mappedBy="recipient")
@@ -956,5 +962,21 @@ class IndividualMember
         $this->messageAdminGranted = $messageAdminGranted;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+    /**
+     * @param mixed $messages
+     */
+    public function setMessages($messages): void
+    {
+        $this->messages = $messages;
     }
 }
