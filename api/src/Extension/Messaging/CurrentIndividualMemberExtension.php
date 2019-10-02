@@ -64,7 +64,6 @@ final class CurrentIndividualMemberExtension implements QueryCollectionExtension
 
     private function supportClass($class)
     {
-//         Delivery::class
-        return in_array($class, []);
+        return in_array($class, [Delivery::class]);
     }
 }
