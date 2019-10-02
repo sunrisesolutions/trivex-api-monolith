@@ -52,8 +52,8 @@ class MessageController extends AbstractController
 
         $totalItems = count($qb->getQuery()->getResult());
 
-        return ['hydra:totalItems' => $totalItems
-        ];
+        return new JsonResponse(['hydra:totalItems' => $totalItems
+        ]);
     }
 
     /**
