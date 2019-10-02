@@ -35,7 +35,6 @@ final class CurrentOrganisationExtension implements QueryCollectionExtensionInte
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
-        return;
         /** @var JWTUser $user */
         $user = $this->security->getUser();
         $supported = $this->supportClass($resourceClass);
