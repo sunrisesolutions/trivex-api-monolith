@@ -4,7 +4,9 @@ namespace App\Controller\Messaging;
 
 use App\Entity\Event\Event;
 use App\Entity\Event\Registration;
+use App\Entity\Messaging\Delivery;
 use App\Entity\Messaging\FreeOnMessage;
+use App\Entity\Messaging\Message;
 use App\Entity\Organisation\IndividualMember;
 use App\Entity\Organisation\Organisation;
 use App\Service\SpreadsheetWriter;
@@ -27,6 +29,30 @@ class MessageController extends AbstractController
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
+    }
+
+
+    /**
+     * @Route("/messages/{messageId}/delivery-stats", name="download_org_free_on_message_xlsx")
+     */
+    public function deliveryStats(Request $request, $messageId)
+    {
+        $registry = $this->getDoctrine();
+        $message = $registry->getRepository(Message::class)->find($messageId);
+        if (empty($message)) {
+            throw new NotFoundHttpException();
+        }
+
+        $selectedOption = $request->get('selectedOptions');
+
+        $qb = $registry->getRepository(Delivery::class)->createQueryBuilder('delivery');
+        $expr = $qb->expr();
+        $qb->andWhere($expr->like('delivery.selectedOptions', $expr->literal('%'.$selectedOption.'%')));
+
+        $totalItems = count($qb->getQuery()->getResult());
+
+        return ['hydra:totalItems' => $totalItems
+        ];
     }
 
     /**
