@@ -86,7 +86,8 @@ class Attendee
 
     /**
      * @var Registration|null $registration
-     * @ORM\OneToOne(targetEntity="App\Entity\Event\Registration", mappedBy="attendee", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Event\Registration", mappedBy="attendee")
+     * @ORM\JoinColumn(name="id_registration", referencedColumnName="id", onDelete="CASCADE")
      * @Groups({"read", "write"})
      */
     private $registration;

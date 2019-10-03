@@ -46,7 +46,6 @@ class Registration
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Event\Attendee", inversedBy="registration", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="id_attendee", referencedColumnName="id")
      * @ApiSubresource()
      */
     private $attendee;
@@ -90,7 +89,7 @@ class Registration
     /**
      * @var Event
      * @ORM\ManyToOne(targetEntity="App\Entity\Event\Event", inversedBy="registrations")
-     * @ORM\JoinColumn(name="id_event", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_event", referencedColumnName="id", onDelete="CASCADE")
      * @Groups({"read", "write"})
      */
     private $event;
