@@ -275,6 +275,10 @@ class Message
      */
     protected $sender;
 
+    public function getSenderGroupName(){
+        return $this->sender->getGroupName();
+    }
+
     /**
      * @return string
      * @Groups("read_message")

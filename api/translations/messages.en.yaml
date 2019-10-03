@@ -17,3 +17,4 @@ xls:
     label_senderName: Sender's Name
     label_effectiveFrom: Effective From
     label_expireAt: Expire On
+    label_senderGroupName: Group/Dept
