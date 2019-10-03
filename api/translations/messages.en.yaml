@@ -15,3 +15,5 @@ xls:
     label_freeOnSaturdays: Free on Saturdays
     label_freeOnSundays: Free on Sundays
     label_senderName: Sender's Name
+    label_effectiveFrom: Effective From
+    label_expireAt: Expire On

@@ -101,7 +101,7 @@ class MessageController extends AbstractController
         $sWriter->goFirstColumn();
         $sWriter->goFirstRow();
 
-        $cols = ['id', 'senderName', 'subject', 'body', 'freeOnMondays', 'freeOnTuesdays', 'freeOnWednesdays', 'freeOnThursdays', 'freeOnFridays', 'freeOnSaturdays', 'freeOnSundays'];
+        $cols = ['id', 'senderName', 'subject', 'body', 'freeOnMondays', 'freeOnTuesdays', 'freeOnWednesdays', 'freeOnThursdays', 'freeOnFridays', 'freeOnSaturdays', 'freeOnSundays', 'effectiveFrom','expireAt'];
         $columnLetterCode = 65; // Letter A
 
         $heading = true;
@@ -131,6 +131,9 @@ class MessageController extends AbstractController
                 $value = $msg->{$getter}();
                 if (is_bool($value)) {
                     $value = $value ? 'YES' : 'NO';
+                }
+                if ($value instanceof \DateTime) {
+                    $value = $value->format('Y-m-d');
                 }
                 $sWriter
                     ->writeCellAndGoRight($value);
