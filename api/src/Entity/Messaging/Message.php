@@ -375,6 +375,23 @@ class Message
      */
     private $approvalDecisionReadAt;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true, options={"default": true})
+     */
+    private $responsesReceivable;
+
+    public function getResponsesReceivable(): ?bool
+    {
+        return $this->responsesReceivable;
+    }
+
+    public function setResponsesReceivable(?bool $responsesReceivable): self
+    {
+        $this->responsesReceivable = $responsesReceivable;
+
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

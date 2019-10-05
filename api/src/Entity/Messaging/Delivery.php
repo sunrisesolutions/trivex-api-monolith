@@ -14,6 +14,7 @@ use App\Entity\Organisation\IndividualMember;
 
 use App\Filter\NotLikeFilter;
 use App\Filter\GroupByFilter;
+use App\Filter\ExpiryFilter;
 
 use App\Util\AppUtil;
 use Doctrine\ORM\Mapping as ORM;
@@ -32,10 +33,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiFilter(DateFilter::class, properties={"readAt"})
  * @ApiFilter(ExistsFilter::class, properties={"readAt", "optionsSelectedAt", "selectedOptionsReadAt"})
  * @ApiFilter(SearchFilter::class, properties={"uuid": "exact", "recipient.uuid": "exact", "message.sender.uuid": "exact", "message.type": "exact", "selectedOptions": "partial"})
- * @ApiFilter(BooleanFilter::class, properties={"selfDelivery"})
+ * @ApiFilter(BooleanFilter::class, properties={"selfDelivery", "message.responsesReceivable"})
  * @ApiFilter(OrderFilter::class, properties={"recipient.person.name", "readAt"}, arguments={"orderParameterName"="order"})
  * @ApiFilter(NotLikeFilter::class)
  * @ApiFilter(GroupByFilter::class)
+ * @ApiFilter(ExpiryFilter::class)
  *
  * @ORM\Entity(repositoryClass="App\Repository\Messaging\DeliveryRepository")
  * @ORM\Table(name="messaging__delivery")
