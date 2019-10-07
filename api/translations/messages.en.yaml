@@ -18,7 +18,7 @@ xls:
     label_effectiveFrom: Effective From
     label_expireAt: Expire On
     label_senderGroupName: Group/Dept
-
     label_selectedOptions: Response
-
     label_recipientName: Recipient's Name
+    label_recipientGroupName: Recipient's Group
+    label_recipientPhone: Recipient's Contact Number
