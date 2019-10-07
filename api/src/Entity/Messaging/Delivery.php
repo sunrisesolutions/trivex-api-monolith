@@ -93,6 +93,11 @@ class Delivery
         return $this->recipient->getPerson()->getPhoneNumber();
     }
 
+    public function getSenderPhone()
+    {
+        return $this->message->getSenderPhone();
+    }
+
     /**
      * @return integer|null
      * @Groups("read")

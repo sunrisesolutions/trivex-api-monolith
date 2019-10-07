@@ -226,6 +226,10 @@ class Message
         return $this->sender->getPerson()->getName();
     }
 
+    public function getSenderPhone(){
+        return $this->sender->getPerson()->getPhoneNumber();
+    }
+
     /**
      * @Groups("write_message")
      */
