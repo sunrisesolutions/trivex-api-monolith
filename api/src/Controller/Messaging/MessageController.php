@@ -110,7 +110,7 @@ class MessageController extends AbstractController
         $sWriter->goFirstColumn();
         $sWriter->goFirstRow();
 
-        $cols = ['id', 'senderName', 'recipientName', 'recipientGroupName', ' recipientPhone', 'subject'];
+        $cols = ['id', 'senderName', 'recipientName', 'recipientGroupName', 'recipientPhone', 'subject'];
         if (!empty($message->getOptionSet())) {
             $cols[] = 'selectedOptions';
         } else {
