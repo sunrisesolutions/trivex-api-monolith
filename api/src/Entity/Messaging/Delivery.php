@@ -68,6 +68,19 @@ class Delivery
         $this->createdAt = new \DateTime();
     }
 
+    public function getSubject(){
+       return $this->message->getSubject();
+    }
+
+    public function getSenderName(){
+        return $this->message->getSenderName();
+    }
+
+    public function getRecipientName()
+    {
+        return $this->recipient->getPerson()->getName();
+    }
+
     /**
      * @return integer|null
      * @Groups("read")
