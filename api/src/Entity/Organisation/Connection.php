@@ -12,7 +12,10 @@ use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * @ApiResource(
- *     attributes={"access_control"="is_granted('ROLE_USER')"},
+ *     attributes={
+ *     "access_control"="is_granted('ROLE_USER')",
+ *     "order"={"updatedAt": "DESC", "createdAt": "DESC"}
+ * },
  *     normalizationContext={"groups"={"read"}},
  *     denormalizationContext={"groups"={"write"}}
  * )
