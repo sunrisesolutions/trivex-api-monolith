@@ -38,7 +38,7 @@ class ConnectionRepository extends ServiceEntityRepository
                 $expr->andX(
                     $expr->like('fromMember.uuid', $expr->literal($myMemberUuid)),
                     $expr->like('toMember.uuid', $expr->literal($friendMemberUuid))
-                ),
+                )
             )
         );
         return $qb->orderBy('c.id', 'ASC')
