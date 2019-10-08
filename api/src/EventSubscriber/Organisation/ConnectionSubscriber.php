@@ -69,8 +69,7 @@ class ConnectionSubscriber implements EventSubscriberInterface
             $connection = $existingConnections[0];
             $connection->setUpdatedAt(new \DateTime());
             $event->setControllerResult($connection);
-
-            $event->setResponse(new JsonResponse(['message' => 'Connections existing'], 200));
+//            $event->setResponse(new JsonResponse(['message' => 'Connections existing'], 200));
         }
 
 //        $event->setControllerResult($connection);
