@@ -6,6 +6,7 @@ use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\Event\Attendee;
 use App\Entity\Organisation\Connection;
 use App\Entity\Organisation\IndividualMember;
+use App\Repository\Organisation\ConnectionRepository;
 use App\Security\JWTUser;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -57,6 +58,20 @@ class ConnectionSubscriber implements EventSubscriberInterface
 //        $event->setResponse(new JsonResponse(['hello'=>'im','im'=>$im], 200));
 
         $connection->setFromMember($im);
+
+        /** @var ConnectionRepository $connectionRepo */
+        $connectionRepo = $this->registry->getRepository(Connection::class);
+        $myMemberUuid = $connection->getFromMember()->getUuid();
+        $friendMemberUuid = $connection->getToMember()->getUuid();
+        $existingConnections = $connectionRepo->findByFriendMemberUuid($myMemberUuid, $friendMemberUuid);
+        if (!empty($existingConnections)) {
+            /** @var Connection $connection */
+            $connection = $existingConnections[0];
+            $connection->setUpdatedAt(new \DateTime());
+            $event->setControllerResult($connection);
+
+            $event->setResponse(new JsonResponse(['message' => 'Connections existing'], 200));
+        }
 
 //        $event->setControllerResult($connection);
 

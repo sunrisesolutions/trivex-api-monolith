@@ -19,6 +19,35 @@ class ConnectionRepository extends ServiceEntityRepository
         parent::__construct($registry, Connection::class);
     }
 
+    /**
+     * @return Connection[] Returns an array of Connection objects
+     */
+    public function findByFriendMemberUuid($myMemberUuid, $friendMemberUuid)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $expr = $qb->expr();
+        $qb
+            ->join('c.fromMember', 'fromMember')
+            ->join('c.toMember', 'toMember');
+        $qb->andWhere(
+            $expr->orX(
+                $expr->andX(
+                    $expr->like('fromMember.uuid', $expr->literal($friendMemberUuid)),
+                    $expr->like('toMember.uuid', $expr->literal($myMemberUuid))
+                ),
+                $expr->andX(
+                    $expr->like('fromMember.uuid', $expr->literal($myMemberUuid)),
+                    $expr->like('toMember.uuid', $expr->literal($friendMemberUuid))
+                ),
+            )
+        );
+        return $qb->orderBy('c.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
+
     // /**
     //  * @return Connection[] Returns an array of Connection objects
     //  */

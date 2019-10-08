@@ -74,6 +74,12 @@ class Connection
     private $createdAt;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("read")
+     */
+    private $updatedAt;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $fulltextString;
@@ -161,6 +167,19 @@ class Connection
 
         return $this;
     }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
 
     public function getFulltextString(): ?string
     {
