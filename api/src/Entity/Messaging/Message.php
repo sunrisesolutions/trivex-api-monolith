@@ -12,6 +12,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use App\Entity\Organisation\IndividualMember;
 use App\Entity\Organisation\Organisation;
 use App\Filter\NotLikeFilter;
+use App\Filter\ExpiryFilter;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
@@ -50,7 +51,8 @@ use App\Controller\MessageApprovalController;
  * @ApiFilter(BooleanFilter::class, properties={"senderMessageAdmin"})
  * @ApiFilter(NotLikeFilter::class)
  * @ApiFilter(ExistsFilter::class, properties={"approvalDecidedAt", "approvalDecisionReadAt"})
- *
+ * @ApiFilter(ExpiryFilter::class)
+
  * @ORM\Entity(repositoryClass="App\Repository\Messaging\MessageRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
