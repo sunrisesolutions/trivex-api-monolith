@@ -381,6 +381,7 @@ class Message
 
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default": true})
+     * @Groups({"read_message", "write_message"})
      */
     private $responsesReceivable;
 
