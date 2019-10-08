@@ -80,7 +80,7 @@ class FreeOnMessage extends Message
     {
         parent::fixData();
         $this->subject = 'Free-on Messages from '.($name = $this->sender->getPerson()->getName());
-        $this->body = sprintf('%s is free from %s:%s to %s:%s on%s starting from %s to %s.', $name, $this->fromHour, $this->fromMinute, $this->toHour, $this->toMinute, $this->getFreeDays(), $this->effectiveFrom ? $this->effectiveFrom->format('d-m-Y') : 'Unknown Date', $this->expireAt ? $this->expireAt->format('d-m-Y') : 'Unknown Date');
+        $this->body = sprintf('%s is free from %s:%s to %s:%s on%s starting from %s to %s.', $name, $this->fromHour, empty($this->fromMinute) ? '00' : $this->fromMinute, $this->toHour, empty($this->toMinute) ? '00' : $this->toMinute, $this->getFreeDays(), $this->effectiveFrom ? $this->effectiveFrom->format('d-m-Y') : 'Unknown Date', $this->expireAt ? $this->expireAt->format('d-m-Y') : 'Unknown Date');
     }
 
     private function getFreeDays()
