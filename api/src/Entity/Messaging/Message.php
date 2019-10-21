@@ -276,7 +276,7 @@ class Message
     /**
      * @var IndividualMember
      * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\IndividualMember", inversedBy="messages")
-     * @ORM\JoinColumn(name="id_sender", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_sender", referencedColumnName="id", onDelete="CASCADE")
      * @Groups({"read_message"})
      */
     protected $sender;

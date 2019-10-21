@@ -195,7 +195,7 @@ class Delivery
     /**
      * @var IndividualMember
      * @ORM\ManyToOne(targetEntity="App\Entity\Organisation\IndividualMember", inversedBy="deliveries")
-     * @ORM\JoinColumn(name="id_recipient", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_recipient", referencedColumnName="id", onDelete="CASCADE")
      * @Groups("read")
      */
     private $recipient;
