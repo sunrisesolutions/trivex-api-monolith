@@ -35,7 +35,7 @@ class ImportMembersCommand extends Command
             ->setDescription('Add a short description for your command')
             ->addArgument('file', InputArgument::REQUIRED, 'Argument description')
             ->addArgument('org', InputArgument::REQUIRED, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description');
+            ->addOption('clear-person', null, InputOption::VALUE_NONE, 'Option description');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -48,9 +48,6 @@ class ImportMembersCommand extends Command
             $io->note(sprintf('You passed an argument: %s', $arg1));
         }
 
-        if ($input->getOption('option1')) {
-            // ...
-        }
 
         $manager = $this->container->get('doctrine.orm.default_entity_manager');
         $projDir = $this->container->get('kernel')->getProjectDir();
@@ -64,10 +61,25 @@ class ImportMembersCommand extends Command
         $personRepo = $this->container->get('doctrine')->getRepository(Person::class);
         $orgRepo = $this->container->get('doctrine')->getRepository(Organisation::class);
         /** @var Organisation $org */
-        $org = $orgRepo->find((int)$arg2);
+        $org = $orgRepo->find((int) $arg2);
+
         if (empty($org)) {
             throw new \Exception('Org not found');
         }
+
+        if ($input->getOption('clear-person')) {
+            $io->note('Emptying people for '.$org->getName());
+            /** @var IndividualMember $member */
+            foreach ($org->getIndividualMembers() as $member) {
+                $person = $member->getPerson();
+                $user = $person->getUser();
+                $manager->remove($user);
+                $manager->remove($person);
+                $manager->remove($member);
+            }
+            $manager->flush();
+        }
+
         $io->note('Importing members for '.$org->getName());
 
         $countries = [
@@ -85,10 +97,43 @@ class ImportMembersCommand extends Command
             if ($line === 1) {
                 continue;
             }
-            $nric = strtoupper(trim($row['C']));
-            if (empty($nric)) {
+            $name = $outlet = $mobile = $dob = null;
+            foreach ($row as $col => $cell) {
+                switch ($col) {
+                    case 'A':
+//                        $person->setGivenName($cell);
+                        break;
+                    case 'B':
+                        $outlet = $cell;
+                        break;
+                    case 'C':
+                        $name = ($cell);
+                        break;
+                    case 'D':
+                        $mobile = $cell;
+                        if (!empty($cell)) {
+//                            $nat = new Nationality();
+//                            $person->addNationality($nat);
+//                            $nat->setNricNumber(strtoupper($cell));
+//                            $countryCode = strtoupper(trim($row['G']));
+//                            $nat->setCountry(array_key_exists($countryCode, $countries)?$countries[$countryCode]:$countryCode);
+                        }
+                        break;
+                    case 'E':
+                        if (!empty($cell)) {
+                            $io->note(trim($cell));
+                            $dob = \DateTime::createFromFormat('d/m/Y', trim($cell));
+                        }
+                        break;
+                }
+            }
+
+            if (empty($mobile)) {
                 continue;
             }
+
+            $nric = $mobile.'_'.$dob->format('d-m-Y');
+
             $person = $personRepo->findOneByNricNumber($nric);
             if (empty($person)) {
                 $person = new Person();
@@ -104,48 +149,30 @@ class ImportMembersCommand extends Command
                 $user->setPerson($person);
 
             }
-            foreach ($row as $col => $cell) {
-                $user = $person->getUser();
-                switch ($col) {
-                    case 'A':
-                        $person->setGivenName($cell);
-                        break;
-                    case 'B':
-                        $person->setFamilyName($cell);
-                        break;
-                    case 'C':
-                        if (!empty($cell)) {
-                            $nat = new Nationality();
-                            $person->addNationality($nat);
-                            $nat->setNricNumber(strtoupper($cell));
-                            $countryCode = strtoupper(trim($row['G']));
-                            $nat->setCountry(array_key_exists($countryCode, $countries)?$countries[$countryCode]:$countryCode);
-                        }
-                        break;
-                    case 'D':
-                        if (!empty($cell)) {
-                            $io->note(trim($cell));
-                            $dob = \DateTime::createFromFormat('d-m-Y', trim($cell));
-                            $person->setBirthDate($dob);
-                            $user->setBirthDate($dob);
-                        }
-                        break;
-                    case 'E':
-                        $person->setGender(strtoupper(trim($cell)));
-                        break;
-                }
-            }
+
+            $person->setGivenName($name);
+
+            $user = $person->getUser();
+            $person->setBirthDate($dob);
+            $user->setBirthDate($dob);
+
+            $nat = new Nationality();
+            $person->addNationality($nat);
+            $nat->setNricNumber(strtoupper($nric));
+
 
             $manager->persist($person);
             $manager->flush($person);
             $member = $org->getIndividualMemberByPerson($person);
+
             if (empty($member)) {
                 $member = new IndividualMember();
-                $member->setPerson($person);
-                $member->setOrganisation($org);
-                $manager->persist($member);
-                $manager->flush($member);
             }
+            $member->setGroupName($outlet);
+            $member->setPerson($person);
+            $member->setOrganisation($org);
+            $manager->persist($member);
+            $manager->flush($member);
         }
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
     }
