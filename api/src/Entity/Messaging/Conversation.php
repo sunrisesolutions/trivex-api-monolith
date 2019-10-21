@@ -41,14 +41,15 @@ class Conversation
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Messaging\Message", mappedBy="conversation")
+     * @ORM\JoinColumn(name="id_message", onDelete="CASCADE")
      */
     private $messages;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Organisation\IndividualMember", inversedBy="conversations")
      * @ORM\JoinTable(name="messaging__conversations_participants",
-     *      joinColumns={@ORM\JoinColumn(name="id_conversation", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="id_individual", referencedColumnName="id")}
+     *      joinColumns={@ORM\JoinColumn(name="id_conversation", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="id_individual", referencedColumnName="id", onDelete="CASCADE")},
      *      )
      */
     private $participants;
