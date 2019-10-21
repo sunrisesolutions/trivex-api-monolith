@@ -96,7 +96,7 @@ class Registration
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person", inversedBy="registrations")
-     * @ORM\JoinColumn(name="id_person", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_person", referencedColumnName="id", onDelete="SET NULL")
      */
     private $person;
 
