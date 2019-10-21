@@ -41,7 +41,6 @@ class Conversation
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Messaging\Message", mappedBy="conversation")
-     * @ORM\JoinColumn(name="id_message", onDelete="CASCADE")
      */
     private $messages;
 
