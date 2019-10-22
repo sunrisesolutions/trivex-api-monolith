@@ -139,7 +139,7 @@ class ImportMembersCommand extends Command
                 $person = new Person();
                 $email = $nric.'.nric.auto-gen@whatwechat.net';
                 $person->setEmail($email);
-                $person->setPhoneNumber($nric);
+                $person->setPhoneNumber($mobile);
                 $user = new User();
                 $user->setPlainPassword($nric);
                 $user->setEmail($email);
