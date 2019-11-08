@@ -160,10 +160,13 @@ class ImportMembersCommand extends Command
 
 
             $person = $personRepo->findOneByNricNumber($nric);
+            $memberEmail = null;
             if (empty($person)) {
                 $person = new Person();
                 if (empty($email)) {
                     $email = $nric.'.nric.auto-gen@whatwechat.net';
+                } else {
+                    $memberEmail = $email;
                 }
                 $person->setEmail($email);
                 $person->setPhoneNumber($mobile);
@@ -197,6 +200,9 @@ class ImportMembersCommand extends Command
 
             if (empty($member)) {
                 $member = new IndividualMember();
+            }
+            if (!empty($memberEmail)) {
+                $member->setEmail($memberEmail);
             }
             $member->setGroupName($outlet);
             $member->setPerson($person);
