@@ -121,14 +121,17 @@ class ImportMembersCommand extends Command
                         break;
                     case 'E':
                         if (!empty($cell)) {
+                            $io->note('DOB');
                             $io->note(trim($cell));
+//                            $dob = $cell;
+//                            $cell = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cell);
                             $dob = \DateTime::createFromFormat('d/m/Y', trim($cell));
                         }
                         break;
                 }
             }
 
-            if (empty($mobile)) {
+            if (empty($mobile) || empty($dob)) {
                 continue;
             }
 
@@ -171,8 +174,8 @@ class ImportMembersCommand extends Command
             $member->setGroupName($outlet);
             $member->setPerson($person);
             $member->setOrganisation($org);
-            $manager->persist($member);
-            $manager->flush($member);
+//            $manager->persist($member);
+//            $manager->flush($member);
         }
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
     }
