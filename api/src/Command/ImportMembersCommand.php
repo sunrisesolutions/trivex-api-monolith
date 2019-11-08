@@ -97,6 +97,7 @@ class ImportMembersCommand extends Command
             if ($line === 1) {
                 continue;
             }
+            $companyName = $positionName = $email = $alternateName = null;
             $name = $outlet = $mobile = $dob = null;
             foreach ($row as $col => $cell) {
                 switch ($col) {
@@ -128,6 +129,26 @@ class ImportMembersCommand extends Command
                             $dob = \DateTime::createFromFormat('d/m/Y', trim($cell));
                         }
                         break;
+                    case 'F':
+                        if (!empty($cell)) {
+                            $email = $cell;
+                        }
+                        break;
+                    case 'G':
+                        if (!empty($cell)) {
+                            $companyName = $cell;
+                        }
+                        break;
+                    case 'H':
+                        if (!empty($cell)) {
+                            $positionName = $cell;
+                        }
+                        break;
+                    case 'I':
+                        if (!empty($cell)) {
+                            $alternateName = $cell;
+                        }
+                        break;
                 }
             }
 
@@ -137,12 +158,19 @@ class ImportMembersCommand extends Command
 
             $nric = $mobile.'_'.$dob->format('d-m-Y');
 
+
             $person = $personRepo->findOneByNricNumber($nric);
             if (empty($person)) {
                 $person = new Person();
-                $email = $nric.'.nric.auto-gen@whatwechat.net';
+                if (empty($email)) {
+                    $email = $nric.'.nric.auto-gen@whatwechat.net';
+                }
                 $person->setEmail($email);
                 $person->setPhoneNumber($mobile);
+                $person->setAlternateName($alternateName);
+                $person->setEmployerName($companyName);
+                $person->setJobTitle($positionName);
+
                 $user = new User();
                 $user->setPlainPassword($nric);
                 $user->setEmail($email);
@@ -150,7 +178,6 @@ class ImportMembersCommand extends Command
                 $user->setPhone($nric);
                 $person->setUser($user);
                 $user->setPerson($person);
-
             }
 
             $person->setGivenName($name);
@@ -174,8 +201,8 @@ class ImportMembersCommand extends Command
             $member->setGroupName($outlet);
             $member->setPerson($person);
             $member->setOrganisation($org);
-//            $manager->persist($member);
-//            $manager->flush($member);
+            $manager->persist($member);
+            $manager->flush($member);
         }
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
     }
