@@ -376,7 +376,7 @@ class IndividualMemberAdmin extends BaseAdmin
     {
         $filterMapper
             ->add('id')
-            ->add('name', null, ['show_filter' => true])
+            ->add('person.name', null, ['show_filter' => true])
             ->add('uuid', null, ['label' => 'form.label_uuid'])
             ->add('accessToken', null, ['label' => 'form.label_access_token'])
             ->add('createdAt', null, ['label' => 'form.label_created_at']);
