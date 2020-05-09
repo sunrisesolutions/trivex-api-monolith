@@ -58,11 +58,6 @@ class AwsS3Util
             'Bucket' => $bucket,
             'Key' => $path,
         ]);
-
-        $apcuGetKey = 'GET_'.$path;
-        if (apcu_exists($apcuGetKey)) {
-            apcu_delete($apcuGetKey);
-        }
     }
 
     public function getObjectWriteForm($path, $expires = '+2 hours')
@@ -137,11 +132,6 @@ class AwsS3Util
 
     public function getObjectReadUrl($path, $expr = '+7 days')
     {
-        $apcuGetKey = 'GET_'.$path;
-        if (apcu_exists($apcuGetKey)) {
-            return apcu_fetch($apcuGetKey);
-        }
-
         $accessKey = getenv('S3_ACCESS_KEY');
         $secretKey = getenv('S3_SECRET_KEY');
         $region = getenv('S3_REGION');
@@ -168,8 +158,6 @@ class AwsS3Util
 
         $request = $s3Client->createPresignedRequest($cmd, $expr);
         $url = (string) $request->getUri();
-
-        apcu_store($apcuGetKey, $url);
 
         return $url;
     }
